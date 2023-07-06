@@ -1,13 +1,9 @@
 import Vue from 'vue'
+import './gobal'
 import App from './App.vue'
-import router from './router'
 import store from './store'
-import Ant from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
-//去除全局样式
-import './styles/base.less'
-Vue.use(Ant);
-Vue.config.productionTip = false
+import router from './router'
+
 
 new Vue({
   router,

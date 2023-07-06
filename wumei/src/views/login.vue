@@ -10,65 +10,17 @@
                 </div>
             </div>
         </div>
-        <a-form id="container" :form="form" class="login-form" @submit="handleSubmit">
-            <a-form-item>
-                <a-input v-decorator="[
-                    'userName',
-                    { rules: [{ required: true, message: 'Please input your username!' }] },
-                ]" placeholder="Username" style="width: 320px;">
-                    <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
-                </a-input>
-            </a-form-item>
-            <a-form-item>
-                <a-input v-decorator="[
-                    'password',
-                    { rules: [{ required: true, message: 'Please input your Password!' }] },
-                ]" type="password" placeholder="Password" style="width: 320px;">
-                    <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-                </a-input>
-            </a-form-item>
-            <a-form-item>
-                <a-checkbox v-decorator="[
-                    'remember',
-                    {
-                        valuePropName: 'checked',
-                        initialValue: true,
-                    },
-                ]">
-                    记住密码
-                </a-checkbox>
-                <a class="login-form-forgot" href="">
-                    忘记了您的密码？
-                </a>
-                或者
-                <a href="">
-                    马上创建？
-                </a>
-                <a-button type="primary" html-type="submit" class="login-form-button">
-                    Log in
-                </a-button>
-
-            </a-form-item>
-        </a-form>
+        <router-view />
+        <div class="user-login-bottom">
+            <a href="">返回官网</a>
+            <a href="">查看文档</a>
+            <a href="">注册账号</a>
+        </div>
     </div>
 </template>
 
 <script>
-export default {
-    beforeCreate() {
-        this.form = this.$form.createForm(this, { name: 'normal_login' });
-    },
-    methods: {
-        handleSubmit(e) {
-            e.preventDefault();
-            this.form.validateFields((err, values) => {
-                if (!err) {
-                    console.log('Received values of form: ', values);
-                }
-            });
-        },
-    },
-};
+
 </script>
 <style lang="less" scoped>
 .user-login {
@@ -78,14 +30,7 @@ export default {
     justify-content: center;
     align-items: flex-start;
 
-    #container {
-        margin-top: -300px;
-        text-align: center;
 
-        .login-form-button {
-            width: 80%;
-        }
-    }
 
     .user-head {
         width: 100%;

@@ -1,29 +1,35 @@
 const { defineConfig } = require('@vue/cli-service')
+const env = process.env.NODE_ENV
+
+
+
 module.exports = defineConfig({
-  //如果
-  transpileDependencies: true,
-  //配置打包文件后存放的目录
-  outputDir: 'dist',
-  //https://iot.fastbee.cn/
-  //配置proxy代理
-  // devServer: {
-  //   //端口号
-  //   port: "",
-  //   //热更新
-  //   hot: true,
-  //   //启用gzip压缩
-  //   compress: true,
-  //   //配置反向代理
-  //   proxy: {
-  //     '/api': {
-  //       //请求的网址
-  //       target: '',
-  //       //启用源请求的更改
-  //       changeOrigin: true,
-  //       pathRewrite:{
-  //         '^/api':''
-  //       }
-  //     }
-  //   }
-  //}
+  /* 基础配置 */
+  publicPath: './',
+  lintOnSave: env !== 'production',
+  transpileDependencies: [],
+  productionSourceMap: false,
+  /* devServer */
+  devServer: {
+    host: '127.0.0.1',
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'https://iot.fastbee.cn/prod-api',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: { "^/api": '' }
+      }
+    }
+  },
+  /* chaninWebpack */
+  // chainWebpack: config => {
+  //   config.optimization.minimizer('terser')
+  //     .tap(options => {
+  //       let compress = options[0].terserOptions.compress
+  //       compress.drop_console = true
+  //       compress.drop_debugger = true
+  //       return options
+  //     })
+  // }
 })

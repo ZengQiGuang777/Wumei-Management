@@ -19,17 +19,20 @@
                         首页
                     </div>
                     <div class="triggerRight-right">
-                        <a-icon type="fullscreen" />
-                        <a-icon type="github" />
-                        <a-icon type="question-circle" />
-                        <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <div class="triggerRight-right-serach">
+                            111
+                        </div>
+                        <div class="triggerRight-right-icon">
+                            <a-icon type="fullscreen" />
+                            <a-icon type="github" />
+                            <a-icon type="question-circle" />
+                            <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        </div>
                     </div>
                 </div>
             </a-layout-header>
             <!-- 面包屑 -->
-            <div class="Bread-crumbs">
-
-            </div>
+            <BreadCrumbs />
             <!-- 内容部分 -->
             <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }">
                 <!-- 路由出口 -->
@@ -39,10 +42,12 @@
     </a-layout>
 </template>
 <script>
-import homePageSlidebottom from './home-page-slidebottom.vue';
+import HomePageSlidebottom from './home-page-slidebottom.vue';
+import BreadCrumbs from '@/layout/Bread-crumbs.vue'
 export default {
     components: {
-        homePageSlidebottom
+        HomePageSlidebottom,
+        BreadCrumbs
     },
     data() {
         return {
@@ -67,6 +72,20 @@ export default {
         flex: 1;
         display: flex;
         justify-content: space-between;
+
+        .triggerRight-right {
+            margin-right: 15px;
+            display: flex;
+            justify-content: space-between;
+
+            .triggerRight-right-icon {
+                width: 150px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                font-size: 20px;
+            }
+        }
 
     }
 }

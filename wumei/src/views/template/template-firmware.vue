@@ -1,12 +1,6 @@
-<template>
-    <div class="demo-box">
-        404
-    </div>
-</template>
-
 <script>
 export default {
-    name: "404",
+    name: "template-firmware",
     data() {
         return {
 
@@ -17,5 +11,11 @@ export default {
     }
 }
 </script>
+
+<template>
+    <div class="demo-box">
+        firmware
+    </div>
+</template>
 
 <style lang="less" scoped></style>

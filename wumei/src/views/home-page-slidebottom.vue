@@ -18,22 +18,22 @@
                 <a-icon type="cluster" />
                 产品分类
             </a-menu-item>
-            <a-menu-item key="iot_product">
+            <a-menu-item key="/home/iot/product">
                 产品管理
             </a-menu-item>
-            <a-menu-item key="iot_group">
+            <a-menu-item key="/home/iot/group">
                 设备分组
             </a-menu-item>
-            <a-menu-item key="iot_device">
+            <a-menu-item key="/home/iot/device">
                 设备管理
             </a-menu-item>
-            <a-menu-item key="iot_alertLog">
+            <a-menu-item key="/home/iot/alertLog">
                 设备告警
             </a-menu-item>
-            <a-menu-item key="iot_scene">
+            <a-menu-item key="/home/iot/scene">
                 场景联动
             </a-menu-item>
-            <a-menu-item key="iot_sip">
+            <a-menu-item key="/home/iot/sip">
                 视频配置
             </a-menu-item>
         </a-sub-menu>

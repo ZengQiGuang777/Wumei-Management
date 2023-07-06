@@ -76,7 +76,19 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import(/* webpackChunkName:'login' */'@/views/login.vue')
+        redirect: '/login/logOn',
+        component: () => import(/* webpackChunkName:'login' */'@/views/login.vue'),
+        children: [{
+            path: 'logOn',
+            name: 'login_logOn',
+            component: () => import(/* webpackChunkName:'login' */'@/views/users/logOn.vue'),
+        },
+        {
+            path: 'create',
+            name: 'login_create',
+            component: () => import(/* webpackChunkName:'login' */'@/views/users/create.vue'),
+        },
+        ]
     },
     {
         path: '/home',
