@@ -26,7 +26,23 @@
                             <a-icon type="fullscreen" />
                             <a-icon type="github" />
                             <a-icon type="question-circle" />
-                            <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                            <a-dropdown>
+                                <a class="ant-dropdown-link" @click="e => e.preventDefault()">
+                                    <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                                    <a-icon type="down" />
+                                </a>
+                                <a-menu slot="overlay">
+                                    <a-menu-item>
+                                        <a href="javascript:;">个人中心</a>
+                                    </a-menu-item>
+                                    <a-menu-item>
+                                        <a href="javascript:;">布局设置</a>
+                                    </a-menu-item>
+                                    <a-menu-item>
+                                        <a href="javascript:;">退出登录</a>
+                                    </a-menu-item>
+                                </a-menu>
+                            </a-dropdown>
                         </div>
                     </div>
                 </div>
@@ -55,8 +71,10 @@ export default {
         };
     },
     methods: {
-
-    }
+        handleMenuClick(e) {
+            console.log('click', e);
+        },
+    },
 };
 </script>
 <style lang="less" scoped>

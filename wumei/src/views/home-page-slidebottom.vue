@@ -4,7 +4,6 @@
             <a-icon type="bank" />
             <span>首页</span>
         </a-menu-item>
-
         <a-sub-menu>
             <span slot="title">
                 <a-icon type="tool" />
@@ -73,11 +72,7 @@
 </template>
 
 <script>
-import Iot from '@/views/iot'
 export default {
-    components: {
-        Iot
-    },
     data() {
         return {
 
@@ -87,11 +82,6 @@ export default {
         handle({ key }) {
             this.$router.push(key)
         },
-        ontitleClick({ key, domEvent }) {
-            console.log({ key, domEvent });
-            this.$router.push({ name: key })
-        }
-
     }
 }
 </script>

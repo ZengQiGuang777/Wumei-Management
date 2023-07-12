@@ -78,7 +78,9 @@ export default {
 <template>
     <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" class="container">
         <a-form-model-item has-feedback prop="account">
-            <a-input v-model="ruleForm.account" autocomplete="off" placeholder="账号" :style="{ width: inputStye }" />
+            <a-input v-model="ruleForm.account" autocomplete="off" placeholder="账号" :style="{ width: inputStye }">
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+            </a-input>
         </a-form-model-item>
         <a-form-model-item has-feedback prop="pass">
             <a-input v-model="ruleForm.pass" type="password" autocomplete="off" placeholder="密码"
@@ -89,10 +91,9 @@ export default {
                 :style="{ width: inputStye }" />
         </a-form-model-item>
         <a-form-model-item has-feedback prop="code">
-            <a-input v-model="ruleForm.code" type="number"  placeholder="验证码"
-                :style="{ width: inputStye }" />
+            <a-input v-model="ruleForm.code" type="number" placeholder="验证码" :style="{ width: inputStye }" />
         </a-form-model-item>
-        <a-form-model-item >
+        <a-form-model-item>
             <a-button type="primary" @click="submitForm('ruleForm')">
                 注册
             </a-button>

@@ -71,7 +71,7 @@ const iotRoutes = [
 const routes = [
     {
         path: '/',
-        redirect: { name: 'homePage' }
+        redirect: '/login/logOn'
     },
     {
         path: '/login',

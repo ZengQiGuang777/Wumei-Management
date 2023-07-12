@@ -14,7 +14,9 @@ export default {
 
 <template>
     <div class="demo-box">
-        <span>首页</span>
+        <a-tag >
+            首页
+        </a-tag>
     </div>
 </template>
 
@@ -27,17 +29,12 @@ export default {
     border-top: 1px solid #d8dce5;
     border-bottom: 1px solid #d8dce5;
 
-    span {
-        display: inline-block;
-        cursor: pointer;
-        height: 26px;
-        line-height: 26px;
-        border: 1px solid #d8dce5;
-        color: #495060;
-        background: #fff;
-        padding: 0 8px;
-        font-size: 12px;
-        margin-top: 2px;
+    .ant-tag {
+        background-color: #fff;
+        width: 70px;
+        text-align: center;
+        margin-right: 5px;
+        margin-top: 4px;
     }
 }
 </style>

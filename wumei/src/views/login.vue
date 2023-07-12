@@ -14,7 +14,9 @@
         <div class="user-login-bottom">
             <a href="">返回官网</a>
             <a href="">查看文档</a>
-            <a href="">注册账号</a>
+            <a href="#/login/create">
+                马上创建
+            </a>
         </div>
     </div>
 </template>
@@ -29,8 +31,19 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
+    position: relative;
 
+    .user-login-bottom {
+        text-align: center;
+        position: fixed;
+        left: 43%;
+        top: 64%;
 
+        a {
+            margin: 0 10px;
+            color: #606266;
+        }
+    }
 
     .user-head {
         width: 100%;
