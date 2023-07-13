@@ -2,6 +2,52 @@
 import ut from '@/assets/utils'
 import router from '@/router';
 export default {
+    data() {
+        // 校验密码的格式
+        const validatePassword = (_, value, callback) => {
+            // if (value === place) return callback()
+            if (value.length === 0) return callback(new Error('密码是必填项哦~'))
+            /* let reg = /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/
+            if (!reg.test(value)) return callback(new Error('密码格式有误~')) */
+            callback()
+        }
+        return {
+            captcha: {
+                isLoading: true,
+                img: '',
+                uuid: ''
+            },
+            ruleForm: {
+                username: '',
+                password: '',
+                code: '',
+                remeber: false
+            },
+            rules: {
+                username: [
+                    {
+                        required: true, message: '账号必须要填哦', trigger: 'blur'
+                    }
+                ],
+                password: [
+                    {
+                        required: true,
+                        validator: validatePassword, trigger: 'blur'
+                    }
+                ],
+                code: [
+                    {
+                        required: true, message: '验证码也必须要填铁汁', trigger: 'blur'
+                    }
+                ],
+            }
+
+        }
+    },
+    /* 在创建的时候发一次请求 */
+    created() {
+        this.queryCaptcha()
+    },
     methods: {
         //获取验证码
         async queryCaptcha() {
@@ -51,54 +97,11 @@ export default {
                 }
                 this.$message.success('铁汁，登录成功了')
                 this.$router.push('/home')
-            } catch (_) { }
-        }
-    },
-    /* 在创建的时候发一次请求 */
-    created() {
-        this.queryCaptcha()
-    },
-    data() {
-        // 校验密码的格式
-        const validatePassword = (_, value, callback) => {
-            if (value === place) return callback()
-            if (value.length === 0) return callback(new Error('密码是必填项哦~'))
-            /* let reg = /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/
-            if (!reg.test(value)) return callback(new Error('密码格式有误~')) */
-            callback()
-        }
-        return {
-            captcha: {
-                isLoading: true,
-                img: '',
-                uuid: ''
-            },
-            ruleForm: {
-                username: '',
-                password: '',
-                code: '',
-                remeber: false
-            },
-            rules: {
-                username: [
-                    {
-                        required: true, message: '账号必须要填哦', trigger: 'blur'
-                    }
-                ],
-                password: [
-                    {
-                        validator: validatePassword, trigger: 'blur'
-                    }
-                ],
-                code: [
-                    {
-                        required: true, message: '验证码也必须要填铁汁', trigger: 'blur'
-                    }
-                ],
+            } catch (_) { 
+                console.log({_})
             }
-
         }
-    }
+    },
 }
 </script>
 
