@@ -2,7 +2,7 @@
  * @param {*} timer
  * @returns
  */
-function slepp(timer = 1000) {
+function sleep(timer = 3000) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, timer);
   });
