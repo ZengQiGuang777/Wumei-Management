@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面试</title>
+    <!-- IMPORT CSS -->
+    <link rel="stylesheet" href="reset.min.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            font-size: 14px;
+        }
+
+        /* 文本框 */
+        .box {
+            position: relative;
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 300px;
+        }
+
+        .inpText {
+            display: block;
+            box-sizing: border-box;
+            padding: 5px;
+            width: 100%;
+            height: 60px;
+        }
+
+        /* 模糊匹配 */
+        .search {
+            display: none;
+            position: absolute;
+            top: 60px;
+            box-sizing: border-box;
+            width: 100%;
+            background: rgb(252, 238, 240);
+        }
+
+        .search li {
+            padding: 0 5px;
+            line-height: 30px;
+            cursor: pointer;
+        }
+
+        .search li:hover {
+            background: rgb(221, 239, 250);
+        }
+
+        /* 按钮 */
+        .handle {
+            padding: 5px 0;
+        }
+
+        .handle button {
+            padding: 5px 10px;
+            border: none;
+            background: lightskyblue;
+            cursor: pointer;
+        }
+
+        .handle button.upload {
+            background: lightpink;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <textarea class="inpText"></textarea>
+        <ul class="search"></ul>
+        <div class="handle">
+            <button class="talk">#话题</button>
+            <button class="upload">上传</button>
+        </div>
+    </div>
+
+    <!-- IMPORT JS -->
+    <script src="utils.js"></script>
+    <script src="jsonp.js"></script>
+    <script>
+        (function () {
+            let inpText = document.querySelector('.inpText'),
+                search = document.querySelector('.search'),
+                talk = document.querySelector('.talk'),
+                upload = document.querySelector('.upload');
+            let reg = /#([^#\s]*)/,
+                prev = '';
+
+            /* 话题联想：利用百度模糊搜获代替话题搜索 */
+            const relevanceHandle = async (val) => {
+                // 获取匹配内容(自己封装的JSONP函数)
+                let talkText = reg.exec(val)[1],
+                    str = '';
+                let { g: arr } = await jsonp('https://www.baidu.com/sugrec', {
+                    jsonpName: 'cb',
+                    params: {
+                        prod: 'pc',
+                        wd: talkText
+                    }
+                });
+                // 绑定匹配内容
+                if (!arr || arr.length === 0) {
+                    search.innerHTML = '';
+                    search.style.display = 'none';
+                    return;
+                }
+                search.style.display = 'block';
+                arr.forEach(({ q }, index) => {
+                    if (q && index < 5) {
+                        str += `<li>${q}</li>`;
+                    }
+                });
+                search.innerHTML = str;
+            };
+            document.addEventListener('click', function (ev) {
+                let target = ev.target,
+                    targetTag = target.tagName,
+                    targetClass = target.className,
+                    targetParent = target.parentNode;
+                if (targetTag === "LI" && targetParent === search) {
+                    // 点击的是模糊匹配项：替换文本框中的内容
+                    search.innerHTML = '';
+                    search.style.display = 'none';
+                    inpText.value = inpText.value.replace(reg, `#${target.innerHTML} `);
+                    prev = reg.exec(inpText.value)[0];
+                    return;
+                }
+                if (targetTag === 'TEXTAREA' && target === inpText) {
+                    // 点击的是文本框：啥都不处理即可
+                    return;
+                }
+                // 点击其余的都是让其隐藏
+                search.innerHTML = '';
+                search.style.display = 'none';
+            });
+
+            /* 文本框内容输入:节流 */
+            inpText.oninput = utils.throttle(function () {
+                let val = inpText.value,
+                    match = reg.exec(val);
+                match = match ? match[0] : '';
+                if (reg.test(val) && match !== prev) {
+                    // 开启模糊匹配
+                    search.style.display = 'block';
+                    prev = match;
+                    relevanceHandle(val);
+                } else {
+                    search.style.display = 'none';
+                }
+            }, 300);
+
+            /* 在文本框中插入话题:防抖 */
+            talk.onclick = utils.debounce(function () {
+                let val = inpText.value,
+                    index_start,
+                    index_end;
+                if (reg.test(val)) {
+                    alert('小主，目前已经存在话题，无法插入第二个~');
+                    return;
+                }
+                if (!inpText.setSelectionRange) {
+                    alert('小主，您的浏览器不支持这个功能~');
+                    return;
+                }
+                index_start = inpText.selectionStart;
+                index_end = inpText.selectionEnd;
+                inpText.value = `${inpText.value.slice(0, index_start)}# ${inpText.value.slice(index_end)}`;
+                inpText.focus();
+                inpText.setSelectionRange(index_start + 1, index_end + 1);
+            }, 300);
+
+            /* 提交信息:防抖 */
+            upload.onclick = utils.debounce(function () {
+                let val = inpText.value,
+                    match = reg.exec(val),
+                    result = [];
+                match = match ? match[0] : '';
+                if (val.trim().length === 0) {
+                    alert('小主，请您先输入内容！');
+                    return;
+                }
+                if (match) {
+                    // 存在话题
+                    let [$1, $2] = val.split(match);
+                    $1 = $1.trim();
+                    $2 = $2.trim();
+                    if ($1) result.push({ type: 'text', value: $1 });
+                    result.push({ type: 'talk', value: match });
+                    if ($2) result.push({ type: 'text', value: $2 });
+                } else {
+                    // 不存在话题
+                    result.push({ type: 'text', value: val });
+                }
+                alert(JSON.stringify(result));
+            }, 300);
+        })();
+    </script>
+</body>
+
+</html>

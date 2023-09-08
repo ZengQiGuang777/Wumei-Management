@@ -1,0 +1,82 @@
+如何部署一个项目
+  1. 购买服务器
+    + 阿里云/腾讯云服务器 「云服务器ECS」
+      服务器有一个“外网IP”：别人基于外网IP就可以访问到服务器
+    + 在服务器上安装一些需要的工具「慎重」
+      操作系统：linux「推荐」、Ubuntu乌班图、windows server
+      发布工具：nginx「推荐」、apache、IIS
+      数据库：mongodb、MySQL、SQLServer、Oracle
+      和后端语言配套的东西：node、...
+    + 把我们编写的代码上传到服务器「FTP上传 -> FileZilla」
+    + 在服务器上进行部署
+      一台服务器上可以部署多个项目
+      我们需要基于“端口号”来区分不同的项目「取值范围 0~65535，其中比较重要的端口号：80、443、21」
+   ----截止目前，其他人可以基于 http://外网IP:端口号 这样的地址访问我们的项目了！！
+  2. 购买域名
+    https://wanwang.aliyun.com/
+    域名：就是给不好记忆的外网IP，起一个好记的名字
+    + 购买域名后，需要做域名解析 
+      域名解析就是让 域名 和 外网IP 关联在一起
+      解析记录在 DNS服务器 上
+    + 一定要记得域名备案
+   ----这样，别人就可以基于 域名 访问我们的项目了！！
+
+========扫盲
+外网IP 、内网IP（局域网IP）
+  局域网：同一个外部网络，基于路由器等设备，构建的局域网络；IP地址就是用来区分，同一个局域网下不同设备的！
+    + 在相同局域网内的设备可以互相访问
+    + 作用：移动端真机调试
+      让手机和电脑处于同一个局域网下
+      把电脑作为服务器，发布项目「找到电脑的局域网IP」
+        windows：ipconfig -all
+        mac：网络设置中查找
+      手机端可以基于这个IP，直接访问同一个局域网下的设备「有时候需要关闭电脑的防火墙」
+    + 公司平时开发的时候，一般都是在内网环境下开发「只有连接公司的内网，才可以调取接口数据等」，回到家后，如果想继续连接公司的内网，就需要 VPIN ！
+  外网：只要有网络，就可以访问！「除非自己做限制」
+  
+域名的分类：
+  顶级域名 qq.com  「只需要购买顶级域名即可，其余都是在域名解析的时候自己手动分配的」
+  一级域名 www.qq.com
+  二级域名 sports.qq.com
+  三级域名 kbs.sports.qq.com
+  ...
+域名后缀的含义：
+  .com 国际域名   .cn 中国域名
+  .net 系统   .edu 教育官网   .gov 政府   .org 官方   .vip 会员  ...
+
+
+======================================
+从输入URL地址到看到页面，中间都经历了啥？
+  第一步：URL地址解析
+    http://www.xxx.com:80/index.html?lx=1&from=weixin#video
+    + URI/URL/URN
+      URI：统一资源标识符
+      URL：统一资源定位符
+      URN：统一资源名称
+    + 传输协议
+      作用：负责客户端和服务器端之间信息的传输（可以理解为快递小哥）
+      http（Hypertext Transfer Protocol）：超文本传输协议（除传输文本内容外，还可传输图片和音视频等）
+      https（Hypertext Transfer Protocol Secure）：HTTP + SSL 更安全的传输协议（经过加密处理）
+      ftp（File Transfer Protocol）：文件传输协议，主要用于往服务器上，上传和下载内容
+    + 域名
+    + 端口号
+      作用：区分相同服务器上部署的不同项目的，取值范围 0~65535 之间
+      浏览器有默认端口号机制：我们在地址栏中输入URL地址，如果没有写端口号，则浏览器会根据当前的传输协议，自动把端口号加上！！
+        + http -> 80
+        + https -> 443
+        + ftp -> 21
+    + 请求资源的路径名称
+    + 问号传参信息
+    + 哈希值「Hash值」
+
+
+-------------
+辅助知识点：URL地址的编译（编码和解码）
+  情况1：基于 encodeURI/decodeURI 对整个URL进行编码解码
+    let url='http://www.xxx.com/哈 哈.html'
+    + 只处理了中文和空格等，对于比较特殊的字符（例如：// : ? # & 等）不处理
+  情况2：基于 encodeURIComponent/decodeURIComponent 对URL地址中的某一部分进行编码和解码
+    let url='http://www.xxx.com/index.html?name=珠峰&from=http://www.weixin.com/'
+    + 在encodeURI的基础上，还会对 “// : ? # &” 等特殊符合编码 
+    url=`...?name=${encodeURIComponent('珠峰')}&from=${encodeURIComponent('http://www.weixin.com/')}`
+  还可以基于 escape/unescape 达到类似于 encodeURIComponent 的效果，只不过：escape一般只有前端有，后端语言中很少具备这个API！所以，建议大家还是使用 encodeURIComponent或者encodeURI（因为大部分后端语言，都具备这样的API）！ 

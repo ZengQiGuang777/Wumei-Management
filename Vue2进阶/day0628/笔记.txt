@@ -1,0 +1,211 @@
+面试题：自定义指令的玩法和作用
++ 在我之前的项目中，有些需求我是基于 Vue.directive 创建自定义指令完成的；我觉得这也算是一种封装技巧，把一些要实现的功能，封装成为自定义指令，以后基于 v-xxx 进行调用，用起来也很方便！比如我之前封装过：
+  + v-power 实现权限的校验「在自定义指令内部，获取登陆者具备的权限标识，根据传递进来的需要判断的标识，验证当前登陆者是否具备相应的权限，从而控制元素的渲染和销毁」
+  + v-debounce/throttle 实现函数的防抖和节流
+  + ...
+  + 在ElementUI组件库中，也提供了两个自定义指令：v-InfiniteScroll处理无限滚动 、v-loading处理加载效果
++ Vue2和Vue3中，自定义指令的玩法是有一些区别的
+  在Vue2中，基于 Vue.directive 创建自定义指令，在其配置项中，包含这样几个钩子函数：
+    + bind 把自定义指令绑定给某个元素后就会触发（一般是组件第一次渲染的时候）
+    + inserted 被绑定元素插入父节点时调用 (仅保证父节点存在，但不一定已被插入文档中)
+    + update/componentUpdated 组件更新后触发（建议使用componentUpdated）
+    + unbind 指令与元素解绑时调用（一般是组件销毁的时候）
+  而在这些钩子函数中，都可以接收到四个参数：
+    + el 指令所绑定的元素，可以用来直接操作DOM
+    + binding 一个对象包含很多信息
+      + name 指令名字（没有v-）
+      + value 指令绑定的值
+      + oldValue 指令绑定的原来的值「在componentUpdated钩子函数中使用」
+      + expression 表达式
+      + arg 参数
+      + modifiers 修饰符
+    + vnode/oldVnode 编译的虚拟DOM对象
+  我们会在指定的钩子函数中，基于接收到的信息，完成项目中的需求！
+  但是在Vue3中，自定义指令的语法有些许的变化：
+    + 因为不再具备Vue这个类，所以基于 app.directive 创建全局自定义指令
+    + 相应的钩子函数，调整为和组件钩子函数相似的名字，让语义化更明显
+      + created 代替了 bind
+      + beforeMount / mounted 代替了 inserted
+      + beforeUpdate / updated 代替了 componentUpdated
+      + beforeUnmount / unmounted 代替了 unbind
+    + 还有 binding 接收的信息中，新增了一个 instance ，当把指令绑定给组件，可以获取组件的实例
+    + ...
+总之，我觉得自定义指令还是很常用的，尤其是针对于视图中的某个元素/组件，需要做啥特殊的处理，用自定义指令来进行封装处理，在开发和使用上，会更加便捷一些！！
+
+
+==========================
+面试题：Vue怎么用 vm.$set() 解决对象新增属性不能响应的问题 ？
++ 在Vue既定的响应式策略中，当new Vue(或第一次渲染组件)的时候，只会把data中“现有的”状态进行数据劫持，对于后期新增进来的“成员”，默认将不会进行数据劫持了！
+  + 所以我之前开发的时候，都会把需要的状态信息，提前写入到data中，让其变为响应式的
+  + 只是新增的成员不会再做响应式处理，但是对于已有成员，新增或者修改的值，Vue2内部依然会调用observe方法进行数据劫持！
++ 所以不瞒您说，$set我虽然知道咋回事，但是项目中基本上很少使用！
++ 但是我之前研究Vue2响应式原理的时候，看过 $set 的源码，他最主要的目的是：给对象新增的成员做响应式的数据劫持，并且通知视图更新！但是其内部有很多特殊情况的处理：
+  Vue.prototype.$set = set
+  实例.$set(target,key,val)
+  + 要求传递的target必须是一个对象类型值，而且不能是只读的（比如：props），也不能是Vue的实例对象
+  + 如果target是一个数组，key是其一个索引项
+    + 如果target是响应式的：基于重写的splice方法新增/修改索引项的信息，完成后通知视图更新，对新修改/新增的值，基于observe进行响应式处理
+    + 如果其不是响应式的：则直接基于内置的splice实现此索引项的新增/修改即可
+  + 如果 target 是对象，核心在于 target 对象是否是经过响应式处理的
+    + 如果没有经过处理：则基于 $set 的所有操作，都仅仅是在 新增/修改 值，不会做任何其余的处理，例如：让视图更新，或者新值的响应式处理等
+    + 如果是经过处理的：
+      + key 如果是 target 现有的成员(本身也是响应式的)，那么在修改值的时候，会触发 key 本身的 SETTER 劫持函数，实现数据更改、新数据的响应式处理、通知视图更新等
+      + key 如果在 target 中不存在，则给新增的成员，基于 defineReactive 进行数据劫持、并且让视图更新
++ 其实 Vue.prototype 上还有也给和 $set 类似的方法：$delete，主要目的是：删除data中数组/对象的某个成员，可以让视图更新！！
+总结：真实项目中，$set/$delete虽然有用，但是我一般很少用，个人觉得不如把需要的状态都事先写在data中，这样方便开发调试！！
+
+function set(target, key, val) {
+    if ((isUndef(target) || isPrimitive(target))) {
+        warn$2("Cannot set reactive property on undefined, null, or primitive value: ".concat(target));
+    }
+    if (isReadonly(target)) {
+        warn$2("Set operation on key \"".concat(key, "\" failed: target is readonly."));
+        return;
+    }
+    var ob = target.__ob__;
+    if (isArray(target) && isValidArrayIndex(key)) {
+        target.length = Math.max(target.length, key);
+        target.splice(key, 1, val);
+        // when mocking for SSR, array methods are not hijacked
+        if (ob && !ob.shallow && ob.mock) {
+            observe(val, false, true);
+        }
+        return val;
+    }
+    if (key in target && !(key in Object.prototype)) {
+        target[key] = val;
+        return val;
+    }
+    if (target._isVue || (ob && ob.vmCount)) {
+        warn$2('Avoid adding reactive properties to a Vue instance or its root $data ' +
+            'at runtime - declare it upfront in the data option.');
+        return val;
+    }
+    if (!ob) {
+        target[key] = val;
+        return val;
+    }
+    defineReactive(ob.value, key, val, undefined, ob.shallow, ob.mock);
+    {
+        ob.dep.notify({
+            type: "add" /* TriggerOpTypes.ADD */,
+            target: target,
+            key: key,
+            newValue: val,
+            oldValue: undefined
+        });
+    }
+    return val;
+}
+
+
+==========================
+面试题：Vue 组件中的 data 为什么必须是函数？
++ 如果给单文件组件中的 data 写成对象格式（而非函数），直接会报错
+  [Vue warn]: The "data" option should be a function that returns a per-instance value in component definitions.
++ 为啥Vue内部，要求组件中的 data 必须是函数，而不能是对象呢？
+  + 因为如果写成对象，那么对象中的状态数据是“共享”的，此时如果一个组件被调用多次，即便创建多个实例，但是这些状态是共享的，在某个被调用的组件中修改状态，也会影响其它被调用组件中的信息！
+  + 而把data写成一个函数，是因为函数执行会产生闭包，让状态是组件内部私有的，而不是共享的，以此来避免冲突！
+
+==========================
+面试题：谈谈你对 Vue 生命周期的理解？
+Vue2和Vue3的钩子函数还是有一些区别的
+  + 在Vue2中，提供了好几个钩子函数，但是在我之前的项目开发中，常用的就那几个
+    @1 created：当把要初始化的信息都处理好（例如属性、状态、监听器、计算属性、还有一些内置的私有属性等）,该挂载到实例上的信息都挂载完毕了，此时Vue内部会基于 callHook 函数，触发 created 钩子函数执行！
+      + 我一般会在这里向服务器发送异步数据请求，这样在组件第一次渲染期间，就在请求数据，等待第一次渲染完毕，可能数据已经获取到了，这样可以尽快的把真实数据渲染到视图中！
+      + 当然也可以放在 beforeMount 钩子中处理，和 created 是一样的！
+    @2 mounted：会在组件第一次渲染完毕后触发，此时在这个钩子中，就可以基于 ref 获取真实的DOM（或者子组件的实例），这样可以干很多事情，例如：
+      + 手动基于 addEventListener 给真实DOM进行事件绑定（一般是某些第三方插件中，需要我们自己手动绑定）
+      + 还可以自己创建定时器或者监听器去实现一些需求，例如：
+        + 我之前实现一个“触底加载更多数据”的功能，就是基于创建 IntersectionObserver 监听器实现的
+        + 之前也设置过定时器，在第一次渲染完毕后，延迟一段时间去处理一些事情
+        + ...
+      + 用的一些第三方插件（比如：echarts/swiper/IScroll等），也需要在视图第一次渲染完毕后，进行初始化处理，实现相关的效果！
+      + mounted钩子函数还是很常用的！
+    @3 updated：在组件每一次更新完毕后触发，如果想在更新完毕后做啥事，可以写在这个钩子函数中
+      + 只不过，不论哪个状态改变，只要组件更新了，updated都会被触发；如果需求就是，不能谁改变，都要做这个事情，写在 updated 中没有任何问题！
+      + 但如果是改变不同状态要做不同的事情，我往往会基于 $nextTick 来代替updated，$nextTick也是在组件更新完毕后触发，而且是晚于updated的！
+    @4 beforeDestory / destoryed : 在组件销毁之前/之后触发的钩子函数
+      + 我一般会在这里，手动清除一些内容，比如：设置的定时器、监听器、手动基于addEventListener做的事件绑定等等，这些东西不会随着组件销毁而释放，需要手动清除，来优化内存空间！
+      + 之前搞管理系统的项目，有的表单页表单内容特别多，用户可能一次性写不完，我做了个信息草稿箱的功能：在组件销毁之前，把用户已经填写（但是还没有填完、没有提交）的信息，存储到本地 localStorage 中，当用户关掉页面，下一次再重新进来的时候，把之前存储的信息直接放在对应的表单中，这样可以让用户不再重新编写！
+    还有一些其它钩子函数，比如：beforeCreate、beforeMount、beforeUpdate等，只不过我在项目中没有用过！
+    项目中配合 <keep-alive> 组件缓存，让组件还具备了 activated、deactivated 两个钩子！
+    当我们使用 vue-router 的时候，在组件中有一些组件内的，导航守卫钩子函数，例如：beforeRouteEnter、beforeRouteLeave、beforeRouteUpdate等，只不过我也很少用！
+  + 在Vue3中，全面是用函数式编程，在vue中提供了相应的钩子函数，需要处理的事情和Vue2依然差不多，只不过钩子函数的名字改了！
+    + 没有 created/beforeCreate 了，被 setup 聚合函数代替，所以我会把发送数据请求的事情，放在 setup 钩子函数中！
+    + onMounted 代替了 mounted
+    + onUpdated 代替了 updated，nextTick函数 代替了 $nextTick
+    这些变化还不大，主要是组件销毁
+    + onBeforeUnmount 代替了 beforeDestory
+    + onUnmounted 代替了 destoryed
+以上就是我常用的钩子函数和处理的一些事情，当然还有很多之前做过的需求，这里就不一一列举了！
+
+
+==========================
+面试题：简单说一下 $nextTick 的作用及实现原理？
+我之前研究过Vue视图更新的原理：
+  + 在Vue中，修改状态让视图更新，其中修改状态值是同步的，但是让视图更新的操作是异步的
+    + 其实就是Vue内部实现了一个更新队列，每次让视图更新，都不会立即更新，而是把其放在更新队列中；
+    + 而让更新队列执行的操作是一个异步任务「支持Promise的浏览器，它是一个异步微任务（因为是基于Promise处理的），不支持的浏览器，它是一个异步宏任务（因为是基于定时器处理的）」
+    + 当同步代码执行完毕后，会通知异步任务执行，让所有的更新操作“统一批处理”，这样视图只需要更新一次
+    + 这样设计的目的是：
+      @1 连续修改多个状态值，视图只需要更新一次，节省性能，加快视图的渲染
+      @2 也可以让代码执行的顺序更加清晰
+      @3 还可以避免无效的更新操作「每一次加入更新队列的时候，内部都会去重」
+      ...
+  + 但是这样也导致一些问题：如果我们想在状态更改、视图更新完毕后，做一些事情，只能写在 updated 钩子函数中，但是不论进行何种操作，只要让视图更新， updated 都会执行；如果只想这几个状态更改，单独做一些事情，此时就需要使用 Vue 中提供的 $nextTick 函数了！
+$nextTick之所以有这样的效果，其内部是利用了 EventLoop 事件循环机制
+  + 当执行 $nextTick(callback) 的时候，会把 callback 放在一个 callbacks 集合中
+  + 而异步微任务(IE是异步宏任务)中有一个任务，就是用来通知 callbacks 集合中的函数执行的
+  + 等待同步操作完毕（或者上一个异步任务执行完毕「例如视图更新」），会把 callbacks 中的函数都按照顺序执行
+在我之前的项目开发中，我经常使用 $nextTick 代替 updated；
+$nextTick在没有传递callback函数的时候，会返回一个promise实例，我们可以基于await等待实例成功后，再执行我们要干的事情，效果和传递callback一样「只不过我用的最多的还是callback方式」！
+
+
+==========================
+面试题：computed 和 watch 的区别和运用的场景？
+在我之前的项目开发中，computed/watch都很常用
+  + computed：计算属性
+    + 依赖于其他状态/属性值，计算出一个“新值”
+      + 创建的计算属性会被挂载到实例上（所以不能和data/methods/props中的字段冲突）
+      + 而且也进行了数据劫持
+        + set劫持函数：在我们没有设置set函数的时候，手动修改计算属性的值，会报错，如果我们自己设置了set函数，则手动修改值的时候，执行我们自己设置的set函数！
+        + get劫持函数：获取计算属性值，只不过这个值可能用的是缓存的值，也可能是重新执行函数算出来的新值
+    + 计算属性具备一个特点：“计算缓存”
+      + 第一次获取计算属性值，会把对应的函数执行，计算出结果
+        + 把此结果缓存起来
+        + 把函数中用到的所有状态/属性，建立起“依赖追踪”：所谓依赖追踪，就是在函数执行的时候，用到哪些状态/属性，都会触发其对应的GETTER函数，在GETTER函数中，设立监听机制（目的是监听其是否变化）！
+      + 第二次及以后再获取计算属性值的时候，首先看依赖的状态是否发生过改变
+        + 如果没有变：直接获取之前缓存的结果来使用
+        + 如果其中至少有一个依赖的状态/属性有变化，都需要把函数重新执行，重新计算新的值出来...
+    相比较于methods中的方法来讲，computed计算属性，因为其“计算缓存/依赖追踪”的机制，可以避免函数每一次都重新执行，减少非必要的消耗，提高页面渲染的速度！
+  + watch：监听器
+    + 监听器的语法
+      watch: {
+        x(newVal, oldVal) {
+            console.log('x发生改变', newVal, oldVal)
+        },
+        y: {
+            handler(newVal, oldVal) {
+                console.log('y发生改变', newVal, oldVal)
+            },
+            immediate: true, //让组件第一次渲染，就立即执行一次
+            deep: true //深度监听：如果监听的状态是个对象，修改对象中的内容，也可以触发监听器
+        },
+        z:[
+            // 当z发生改变，数组中的每一项规则都会执行
+            function(){},
+            {
+                handler(){},
+                immediate:true
+            }
+        ],
+        h:'init' //当h改变的时候，去实例上找 init 方法执行
+      }
+    + 对“现有”的状态/属性进行监听，当被监听的状态/属性发生改变，会把指定的 handler 方法执行「在Vue内部，就是基于创建 Watcher 类的实例来完成的」
+不论是 computed 还是 watch，其实其底层都是“建立了监听机制”，都是当依赖/监听的状态发生改变，对应的函数才会执行，从性能上来讲其实是差不多的！
+  + 只不过，computed会对函数中用到的“所有状态”，都自动建立起依赖追踪，而watch需要我们一个个的进行监听；所以从便捷度来讲，如果需要监听多个状态，做相同的事情，用computed会更方便一些！
+  + 如果是依赖别的状态算出新的值，computed更符合语义化一些，而watch的语义，就是监听某个状态变化，做点啥事，但是不一定需要算出新的值！从这一点出发，到底用computed还是watch，可以看是否需要算新的值出来！
+  + watch有一个computed不适合的能力：在watch设定的监听函数中，是可以发送异步数据请求的，而computed中是不搞异步操作的！
+在项目中，我就是根据 computed 和 watch 的多方面特征，来选择用谁更合适的，如果两个都合适，我个人习惯于用 computed 计算属性！！
+接下来还可以举一些具体应用的例子...

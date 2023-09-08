@@ -1,0 +1,76 @@
+从零开始构建一个Vue2的项目
+  1. 基于 @vue/cli 脚手架创建项目
+    $ vue create xxx 
+    ---
+    修改默认的配置项：
+    - 基础配置项
+      + publicPath
+      + lintOnSave
+      + transpileDependencies
+      + productionSourceMap
+      + ...
+    - DEV-SERVER
+      + host
+      + port
+      + open
+      + proxy
+      + ...
+    - 进阶处理
+      + configWebpack
+      + chainWebpack
+        + 生产环境下去除 console/debugger
+      + css
+        + 定义less中使用的公共样式变量
+      + ...
+    - babel.config.js
+      + 组件库的按需导入
+      + ...
+    ---
+    浏览器兼容的处理：
+    + browserslist
+    + @babel/polyfill(或core-js)
+    + ...
+    ---
+    移动端的REM响应式布局开发 
+    + lib-flexible
+      + 帮助我们自动设置 html 的字体大小（也就是 rem 和 px 的换算比例），随着设备大小的切换，它也会跟着更改！
+      + 设置的值 = 设备的宽度 / 10
+        设计稿是375px的：1rem = 37.5px
+        设备宽度是414px：1rem = 41.4px
+      + 当设备宽度超过 540px 后，将不会继续放大（也就是最大的 html 字体大小是：54px）
+    + postcss-pxtorem 「postcss-loader的插件」
+      + 在代码编译的时候，可以把我们写的 px 单位的值，按照指定的 rem 和 px 的换算比例，自动转换为 rem 的值！
+      + 好处：我们基于 375 的设计稿，量出来多大，写样式的时候就写多少 px，此插件会默认帮我们把样式转换为 rem ！
+    ---
+    安装一些后续需要使用的插件/组件库
+    + axios
+    + blueimp-md5
+    + fastclick
+    + hammerjs
+    + less/less-loader
+    + ...
+  2. 配置一些项目中需要的基本骨架
+    + FastClick处理
+    + API接口的统一管理  api
+      import API from './api'
+      Vue.prototype.$API = API
+    + 准备一些静态资源  assets
+      + 通用样式
+      + 静态资源图片
+      + 公共的JS方法库 utils.js
+      + ...
+    + 构建 vuex 的架子  store
+    + 构建 vue-router 的架子  router
+      + 分析路由
+      + 创业 .vue 单文件组件(页面  views)
+      + 配置路由表（路由懒加载）
+      + ...
+    + global.js
+    + ...
+  3. 一个页面一个页面的开发
+    + 搭结构、写样式
+    + 实现相应的需求功能
+    + 最主要的是：注意组件的抽离和封装「通用的业务组件、UI组件库组件的二次封装、通用的功能组件...」
+  4. 优化&内测（自己测试几遍）
+  5. 提测&Bug修复
+  6. 打包部署上线

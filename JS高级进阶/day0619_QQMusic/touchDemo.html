@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于touch实现点击操作</title>
+    <!-- IMPORT CSS -->
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        .box {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            box-sizing: border-box;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+
+    <!-- IMPORT JS -->
+    <script>
+        /*
+        // 基于touch事件模型模拟出“点击”的效果
+        const box = document.querySelector('.box')
+        box.ontouchstart = function (ev) {
+            /!*
+            手指按下的时候：记录手指起始的坐标位置
+            ev:TouchEvent
+              touches/targetTouches/changedTouches：都记录了手指位置的相关信息「伪数组」
+              我们平时都用changedTouches，因为其可以在 touchend 事件中，记录出手指离开屏幕时的坐标
+            *!/
+            let finger = ev.changedTouches[0]
+            this.startX = finger.pageX
+            this.startY = finger.pageY
+            this.isMove = false
+        }
+        box.ontouchmove = function (ev) {
+            /!*
+             手指移动的时候：获取最新的手指坐标，减去起始坐标，计算出偏移的距离
+             在给定的误差值（一般都是10px）范围内，计算是否发生移动
+             *!/
+            let finger = ev.changedTouches[0]
+            let changeX = finger.pageX - this.startX,
+                changeY = finger.pageY - this.startY
+            if (Math.abs(changeX) > 10 || Math.abs(changeY) > 10) this.isMove = true
+            this.changeX = changeX
+            this.changeY = changeY
+        }
+        box.ontouchend = function (ev) {
+            /!*
+             手指离开屏幕的时候：判断是移动还是点击操作
+             如果是移动操作，还可以基于偏移的距离算出移动的方向
+             *!/
+            let { isMove, changeX, changeY } = this
+            if (!isMove) {
+                console.log('当前是点击操作')
+                this.style.background = 'pink'
+                return
+            }
+            if (Math.abs(changeX) >= Math.abs(changeY)) {
+                // 是左右滑动
+                if (changeX >= 0) {
+                    console.log('向右滑动')
+                } else {
+                    console.log('向左滑动')
+                }
+                return
+            }
+            // 是上下滑动
+            if (changeY >= 0) {
+                console.log('向下滑动')
+            } else {
+                console.log('向上滑动')
+            }
+        }
+        */
+
+        /*
+        移动端的常规操作，基本上都是基于 touchstart/touchmove/touchend 模拟出来的
+          + 模拟点击
+          + 模拟滑动「知道滑动方向」
+          + 模拟单击/双击「300ms」
+          + 模拟长按「750ms」
+          + ...
+        对于一些需要多根手指进行的操作，可以基于 gesturestart/gesturechange/gestureend 模拟出来
+          + 缩放
+          + 旋转
+          + ...
+        */
+
+        /*
+        // 简易的处理方法：只要手指离开盒子，则认为触发了点击操作「这样是不准确的，如果手指之前发了移动，则本操作不再是点击，而是滑动」
+        box.ontouchend = function () {
+            this.style.background = 'pink'
+        } 
+        */
+    </script>
+
+    <!-- <script src="js/fastclick.js"></script>
+    <script>
+        // 这样的处理在移动端会有300ms延迟问题
+        // 此时我们基于 fastclick 插件处理一下即可
+        FastClick.attach(document.body)
+        const box = document.querySelector('.box')
+        box.onclick = function () {
+            this.style.background = 'pink'
+        }
+    </script> -->
+
+    <!-- <script src="js/zepto.min.js"></script>
+    <script>
+        $('.box').tap(function () {
+            $(this).css({
+                background: 'pink'
+            })
+        })
+    </script> -->
+
+    <script src="js/hammer.min.js"></script>
+    <script>
+        const box = document.querySelector('.box')
+        const instHammer = new Hammer(box)
+        instHammer.on('tap', function () {
+            box.style.background = 'pink'
+        })
+    </script>
+</body>
+
+</html>

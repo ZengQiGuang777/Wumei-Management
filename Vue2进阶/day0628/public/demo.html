@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试</title>
+</head>
+
+<body>
+    <div id="app">
+        {{ x }}
+        <br>
+        {{ obj }}
+        <br>
+        <span v-for="item in arr" :key="item">{{item}}</span>
+    </div>
+
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script>
+        let vm = new Vue({
+            data: {
+                x: 10,
+                obj: {
+                    n: 100
+                },
+                arr: [1, 2, 3]
+            }
+        })
+        vm.$mount('#app')
+
+        setTimeout(() => {
+            // vm.x = 1000 //更新
+            // vm.obj.n = 1000 //更新
+            // vm.obj.m = 2000 //仅仅是新增一个成员
+            // vm.$set(vm.obj, 'm', 2000) //新增成员、让m也是响应式的、视图更新
+            // vm.$set(vm.obj, 'n', 1000) //更新，和 vm.obj.n=1000 没区别
+
+            // vm.arr[3] = 4 //不会更新
+            // vm.$set(vm.arr, 3, 4) //更新、对新增的值进行处理
+            // vm.arr.push(4) //更新
+            // vm.arr = [...vm.arr, 4] //更新
+
+            // vm.$set(vm, 'name', '哈哈') //[Vue warn]: Avoid adding reactive properties to a Vue instance or its root $data at runtime - declare it upfront in the data option
+        }, 1000)
+    </script>
+</body>
+
+</html>

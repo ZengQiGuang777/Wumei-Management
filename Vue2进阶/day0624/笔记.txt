@@ -1,0 +1,122 @@
+如何学习Vue？
+  第一条线：视图线
+    + <template>或JSX语法
+      + 指令「内置的14个指令和自定义指令」
+      + JSX语法
+    + VirtualDOM编译的机制
+    + 掌握DOM-DIFF算法
+    + ...
+  第二条线：数据线
+    + 学习 OptionsAPI/CompositionAPI 中的：语法、原理、区别等内容
+    + 学习 MVVM 的原理
+      + 数据是如何被监听的「Vue2和Vue3是不一样的」
+      + 监听数据变化后，如何通知视图更新「观察者模式」
+      + 如何监听视图的变化，以及如何让状态跟着更改「v-model」 
+  第三条线：组件化开发
+    + 单文件组件「含样式私有化方案的原理」
+    + 类组件和函数组件
+    + 复合组件通信
+    + 组件封装的技巧「各种封装技巧」
+      + 通用业务组件
+      + UI组件库的二次封装
+      + 通用功能组件
+      + Vue.mixin
+      + Vue.directive
+      + Vue.extend
+      + ...
+  第四条线：实战线
+    + vuex / vue-router
+      + ...
+    + <keep-alive>
+    + <transition>
+    + <component>
+    + 上拉刷新、下拉加载
+    + 超长列表性能优化
+    + 登录/权限管理模型
+    + 前后端数据通信管理方案
+    + ...
+
+==========================
+Vue是渐进式框架
+  所谓渐进式框架，就是把一套全面的框架设计体系，拆分成为多个框架，项目中需要用到哪些需求，再导入对应的框架，以此保证外部资源的最小化！
+「Vue2全家桶」
+  + vue@2：vue框架的核心
+  + vuex@3：公共状态管理
+    + vuex-persist 公共状态持久化存储插件
+    + ...
+  + vue-router@3：SPA单页面应用中的路由管理
+  + UI组件库
+    + PC：element-ui、antd of vue@1、iview...
+    + 移动端：vant@2、cube...
+  + ...
+「Vue3全家桶」
+  + vue@3
+  + vuex@4、pinia
+  + vue-router@4
+  + UI组件库
+    + PC：element-plus、antd of vue@3...
+    + 移动端：vant@3...
+  + ...
+Vue生态中，完善的项目解决方案：
+  + antd pro vuex「淘系方案」
+    免费版：vue2
+    收费版：vue3 + TS
+    https://pro.antdv.com/
+  + 若依
+    https://ruoyi.vip/
+  + ...
+
+==========================
+面试题：谈谈你对 MVVM / MVC 模式的理解?
+  MVVM 双向数据驱动框架「Vue2/3」
+    + model 数据层
+      在数据层，我们需要构建出，项目中需要的各种数据/方法，例如：响应式状态、属性、计算属性、监听器、过滤器、方法、钩子函数...
+      + vue2中：基于 OptionsAPI(配置项) 方式，来管理这些内容
+      + vue3中：基于 CompositionAPI(聚合式)&函数式编程 方式，来管理这些内容
+    + view 视图层
+      在Vue框架中，我们基于 <template>或JSX 语法构建需要的视图，最后把视图编译为 VirtualDOM(虚拟DOM)，再经过 DOM-DIFF 进行差异化对比，最后把 VirtualDOM/补丁包 渲染为 真实的DOM！
+      + vue2中：基于 vue-template-compiler 插件，把视图编译为 VirtualDOM
+      + vue3中：基于 @vue/compiler-sfc 插件，把视图编译为 VirtualDOM
+    + viewModel 监听层(Vue框架的核心)
+      监听响应式数据的变化，当数据发生改变后，通知视图更新
+        + Vue2中基于 Object.defineProperty 对数据进行劫持
+        + Vue3中基于 ES6中的Proxy 对数据进行劫持
+        + 基于观察者模式通知视图更新
+      监听视图的变化(一般指的是Form表单内容的改变)，当视图内容改变后，自动修改对应的数据「数据一改，视图紧接着跟着更新」
+        + 监听视图变化主要是基于 v-model 指令
+
+  MVC 单向数据驱动框架「React」
+    + model 数据层
+      构建项目中需要的数据和方法，例如：状态、属性、钩子函数、普通函数等
+      + 类组件中：基于 state/props/实例 等方式，构建状态属性等
+      + 函数组件中：基于 useState/useEffect 等Hooks函数，完成上述内容的管理
+    + view 视图层
+      在React中，基于JSX语法构建需要的视图；React会基于 babel-preset-react-app 把JSX语法编译为 React.createElement格式，createElement方法执行，会创建出对应的 VirtualDOM，经过 DOM-DIFF 对比，最后把 VirtualDOM/补丁包，基于 ReactDOM 中的 render 方法，渲染为真实的DOM！
+    + controller 控制层
+      实现事件绑定和相关的业务逻辑
+      + React框架实现了“数据更改，可以让视图自动更新”的机制，但是不同于Vue，并没有对状态做数据劫持，如果打算修改状态后，让视图更新，需要基于特定的方法去修改状态才可以！
+        + 类组件中，可以用 setState/forceUpdate 方法
+        + 函数组件中，可以用 useState 等Hook函数
+      + 但是React中默认并没有实现对视图的监听，这样导致，视图内容改变，对应的状态也不会自动更改
+        + 不过我们可以自己给表单元素做事件绑定，当内容改变后，手动去修改对应的状态
+
+  不论是MVVM还是MVC，都是目前，前端主流的框架思想，都是以“数据驱动视图渲染”为核心，告别传统直接操作DOM的方式，转而操作 VirtualDOM！再配合对应的生态体系，让项目开发即高效，又提高了性能！...
+
+==========================
+面试题：Vue2框架怎么实现对象和数组的监听？「Vue2响应式原理」
+
+
+
+
+
+
+
+
+Vue2框架常见的面试题
+3. v-model指令实现的原理
+4. v-show 与 v-if 有什么区别？
+5. Class 与 Style 如何动态绑定？
+6. computed 和 watch 的区别和运用的场景？
+7. 谈谈你对 Vue2 生命周期的理解？
+8. Vue怎么用 vm.$set() 解决对象新增属性不能响应的问题 ？
+9. 开发中常用的Vue指令有哪些

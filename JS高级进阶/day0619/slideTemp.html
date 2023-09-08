@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试幻灯片插件</title>
+    <!-- IMPORT CSS -->
+    <link rel="stylesheet" href="css/zfslide.plugin.min.css">
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        /* 在插件样式的基础上，自己增加/调整新的样式 */
+        #slide1,
+        #slide2 {
+            margin: 20px auto;
+        }
+
+        #slide2 {
+            width: 300px;
+            height: 165px;
+        }
+
+        /* 新增的元素自己设置样式 */
+        #slide2 .time {
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+            z-index: 1;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: #FFF;
+            background: rgba(0, 0, 0, .6);
+        }
+
+        /* 修改插件内部元素的样式 */
+        .zfslide-progress .zfslide-all {
+            background: rgba(255, 255, 255, .7);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="zfslide" id="slide1">
+        <div class="zfslide-cover">
+            <img src="images/fengmian.jpg" alt="">
+        </div>
+        <div class="zfslide-progress"></div>
+    </div>
+    <div class="zfslide" id="slide2">
+        <div class="zfslide-cover">
+            <img src="images/fengmian.jpg" alt="">
+            <span class="time">03:48</span>
+        </div>
+        <div class="zfslide-progress"></div>
+    </div>
+
+    <!-- IMPORT JS -->
+    <script src="js/zfslide.plugin.min.js"></script>
+    <script>
+        zfslide('#slide1', {
+            back: 'images/225865760.png',
+            total: 46,
+            // progress: false
+        })
+
+        zfslide('#slide2', {
+            back: 'images/3x3.png',
+            total: 9,
+            column: 3
+        })
+    </script>
+</body>
+
+</html>

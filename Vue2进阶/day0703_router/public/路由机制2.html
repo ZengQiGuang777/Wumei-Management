@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端路由机制实现</title>
+</head>
+
+<body>
+    <nav class="nav-box">
+        <a href="/">首页</a>
+        <a href="/product">产品中心</a>
+        <a href="/personal">个人中心</a>
+    </nav>
+    <div class="view-box"></div>
+
+    <!-- IMPORT JS -->
+    <script>
+        const viewBox = document.querySelector('.view-box'),
+            navBox = document.querySelector('.nav-box')
+
+        /* 构建路由表 */
+        const routes = [{
+            path: '/',
+            component: '首页的内容'
+        }, {
+            path: '/product',
+            component: '产品中心的内容'
+        }, {
+            path: '/personal',
+            component: '个人中心的内容'
+        }]
+
+        /* 编写路由匹配规则 */
+        const matchRoutes = function matchRoutes() {
+            let pathname = location.pathname
+            let item = routes.find(item => {
+                return item.path === pathname
+            })
+            viewBox.innerHTML = item ? item.component : '404页面'
+        }
+
+        /* 点击A标签，让其基于 pushState 进行跳转 */
+        navBox.onclick = function (ev) {
+            let target = ev.target,
+                targetTag = target.tagName
+            if (targetTag === 'A') {
+                // 阻止默认行为
+                ev.preventDefault()
+                history.pushState({}, '', target.href)
+                matchRoutes()
+            }
+        }
+
+        /* 监听回退和前进 */
+        window.onpopstate = matchRoutes
+
+        /* 第一次渲染 */
+        if (/\.html$/.test(location.pathname)) {
+            history.pushState({}, '', '/')
+            matchRoutes()
+        }
+    </script>
+</body>
+
+</html>

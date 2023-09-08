@@ -1,0 +1,89 @@
+﻿默认启动的后台端口号：9000 「可以去 package.json 中修改 ，config -> server」
+启动后台
+  $ yarn              //先跑环境 
+  $ node server.js    //启动后台「注意启动窗口不可关闭，如需关闭后服务依旧存在，可以基于 pm2 进行管理」
+==============================
+1. 获取柱状图统计数据
+  地址：/statistics/bar
+  方式：GET
+  参数：
+  结果：{
+    code:0,  //返回数据的状态码   0->正常  1->非正常
+    codeText:'',  //数据状态的描述信息
+    data:{
+      2018: {
+        "may": 3769,
+        "june": 6076,
+        "july": 8792
+      },
+      2019: {
+        "may": 10863,
+        "june": 11976,
+        "july": 12345
+      }
+    }
+  }
+
+2. 获取饼状图统计数据
+  地址：/statistics/pie
+  方式：GET
+  参数：
+  结果：{
+    code:0,
+    codeText:'',
+    data:{
+      "active":3467,
+      "unactive":8900
+    }
+  }
+
+3. 获取趋势图统计数据
+  地址：/statistics/trend
+  方式：GET
+  参数：
+  结果：{
+    code:0,
+    codeText:'',
+    data:{
+      "monday": 820,
+      "tuesday": 832,
+      "wednesday": 901,
+      "thursday": 934,
+      "friday": 1290,
+      "saturday": 1330,
+      "sunday": 1320
+    }
+  }
+
+4. 获取活跃度排行榜
+  地址：/statistics/ranking
+  方式：GET
+  参数：
+  结果：{
+    code:0,
+    codeText:'',
+    data:[
+      {
+        "id": 1,  //编号
+        "name": "秦始皇",  //姓名
+        "timeLen": 213,  //访问时长
+        "count": 7  //访问次数
+      },
+      ...
+    ]
+  }
+
+5. 修改活跃数和非活跃数
+  地址：/update/active
+  方式：POST
+  参数：「格式：JSON字符串 或者 URLENCODED格式字符串」
+    type:'active' 或者 'unactive'   // 修改的是活跃数还是非活跃数
+    num:1  //每次向上累加的数量，不传递默认则是1
+  结果：{
+    code:0,
+    codeText:'',
+    data:{  //返回最新的修改后的统计信息
+      "active":3467,
+      "unactive":8900
+    }
+  }

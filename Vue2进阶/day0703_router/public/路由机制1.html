@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端路由机制实现</title>
+</head>
+
+<body>
+    <nav class="nav-box">
+        <a href="#/">首页</a>
+        <a href="#/product">产品中心</a>
+        <a href="#/personal">个人中心</a>
+    </nav>
+    <div class="view-box"></div>
+
+    <!-- IMPORT JS -->
+    <script>
+        /* 路由容器 */
+        const viewBox = document.querySelector('.view-box')
+
+        /* 构建路由表「路由匹配规则：啥地址，匹配啥组件/内容」 */
+        const routes = [{
+            path: '/',
+            component: '首页的内容'
+        }, {
+            path: '/product',
+            component: '产品中心的内容'
+        }, {
+            path: '/personal',
+            component: '个人中心的内容'
+        }]
+
+        /* 路由匹配 */
+        const matchHandle = function matchHandle() {
+            let hash = location.hash.substr(1) //获取最新的哈希值
+            // 去路由表中进行匹配
+            let item = routes.find(item => {
+                return item.path === hash
+            })
+            // 如果匹配不到，渲染404
+            if (!item) {
+                viewBox.innerHTML = '404页面'
+                return
+            }
+            // 如果匹配到了，则把匹配的内容进行渲染
+            viewBox.innerHTML = item.component
+        }
+
+        /* 监测哈希值的变化 */
+        window.addEventListener('hashchange', matchHandle)
+
+        /* 页面第一次渲染 */
+        if (!location.hash) location.hash = '#/'
+        matchHandle()
+    </script>
+</body>
+
+</html>

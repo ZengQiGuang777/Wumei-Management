@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>常见的 数据清洗/数据分析 面试题</title>
+    <meta charset='utf-8'>
+    <link href='https://cdn.maxiang.io/res-min/themes/marxico.css' rel='stylesheet'>
+    <style>
+        #preview-contents {
+            margin: 0 auto;
+            margin-top: -20px;
+            width: 900px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='preview-contents' class='note-content'>
+
+
+
+        <h4 id="常见的-数据清洗数据分析-面试题">常见的 数据清洗/数据分析 面试题</h4>
+
+        <p><strong>1. 编写 getValue 方法，完成如下需求「字节-商业平台笔试题」</strong></p>
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-comment">// 已知多维对象如下</span>
+</div><div class="hljs-line"><span class="hljs-keyword">let</span> obj = {
+</div><div class="hljs-line">    <span class="hljs-attr">a</span>: {
+</div><div class="hljs-line">        <span class="hljs-attr">b</span>: {
+</div><div class="hljs-line">            <span class="hljs-attr">c</span>: {
+</div><div class="hljs-line">                <span class="hljs-attr">d</span>: <span class="hljs-number">1</span>
+</div><div class="hljs-line">            }
+</div><div class="hljs-line">        }
+</div><div class="hljs-line">    }
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> getValue = <span class="hljs-function">(<span class="hljs-params">originObj, keyPath</span>) =&gt;</span> {
+</div><div class="hljs-line">    <span class="hljs-comment">// 编写你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">// 实现如下结果的输出</span>
+</div><div class="hljs-line"><span class="hljs-keyword">let</span> res1 = getValue(obj, <span class="hljs-string">'a.b.c.d'</span>);
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(res1); <span class="hljs-comment">//-&gt; 1</span>
+</div><div class="hljs-line"><span class="hljs-keyword">let</span> res2 = getValue(obj, <span class="hljs-string">'a.b'</span>);
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(res2); <span class="hljs-comment">//-&gt; {c:{d:1}}</span>
+</div><div class="hljs-line"><span class="hljs-keyword">let</span> res3 = getValue(obj, <span class="hljs-string">'a.y.x.z'</span>);
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(res3); <span class="hljs-comment">//-&gt; undefined</span>
+</div></code></pre>
+
+        <p><strong>2. 给定一个以数字组成的数组，实现输出id为数字，并且从小到大排序的name （请使用es6语法）</strong></p>
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">const</span> source = [
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'test1'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: {}, <span class="hljs-attr">name</span>: <span class="hljs-string">'ssdf'</span> },
+</div><div class="hljs-line">    <span class="hljs-string">"test"</span>,
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { }, <span class="hljs-attr">name</span>: <span class="hljs-string">'sf'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-string">'6'</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'test3'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-number">6</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'test4'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'test7'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'test2'</span> },
+</div><div class="hljs-line">    { <span class="hljs-attr">name</span>: <span class="hljs-string">'sf'</span> },
+</div><div class="hljs-line">    {},
+</div><div class="hljs-line">];
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> filterSort = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">filterSort</span>(<span class="hljs-params">source</span>) </span>{
+</div><div class="hljs-line">    <span class="hljs-comment">// 编写你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">let</span> result = filterSort(source);
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(result);
+</div><div class="hljs-line"><span class="hljs-comment">// 输出结果如下 ['test2', 'test1', 'test4', 'test7']</span>
+</div></code></pre>
+
+        <p><strong>3. 完成如下需求</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">const</span> pathList = [
+</div><div class="hljs-line">  <span class="hljs-string">'/a/b'</span>,
+</div><div class="hljs-line">  <span class="hljs-string">'/a/2/c'</span>,
+</div><div class="hljs-line">  <span class="hljs-string">'/d'</span>
+</div><div class="hljs-line">];
+</div><div class="hljs-line"><span class="hljs-comment">/**</span>
+</div><div class="hljs-line"><span class="hljs-comment">如上，输入是一个一维String数组pathList，里面记录了由"/"分隔的字符串，表示了用户在系统中存储的目录结构</span>
+</div><div class="hljs-line"><span class="hljs-comment">  + 现在需要将这个目录结构进行结构化，方便使用Echarts等可视化组件进行绘制</span>
+</div><div class="hljs-line"><span class="hljs-comment">  + 结构化的要求：将目录结构以嵌套对象的形式表现出来</span>
+</div><div class="hljs-line"><span class="hljs-comment">    {</span>
+</div><div class="hljs-line"><span class="hljs-comment">      "a": {</span>
+</div><div class="hljs-line"><span class="hljs-comment">        "2": {</span>
+</div><div class="hljs-line"><span class="hljs-comment">          "c": {}</span>
+</div><div class="hljs-line"><span class="hljs-comment">        },</span>
+</div><div class="hljs-line"><span class="hljs-comment">        "b": {}</span>
+</div><div class="hljs-line"><span class="hljs-comment">      },</span>
+</div><div class="hljs-line"><span class="hljs-comment">      "d": {}</span>
+</div><div class="hljs-line"><span class="hljs-comment">    }</span>
+</div><div class="hljs-line"><span class="hljs-comment">实现要求：请实现下面的pathFormat方法，完成这个结构化的过程</span>
+</div><div class="hljs-line"><span class="hljs-comment"> */</span>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> pathFormat = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pathFormat</span>(<span class="hljs-params">pathList</span>) </span>{
+</div><div class="hljs-line">  <span class="hljs-comment">// 编写你的代码</span>
+</div><div class="hljs-line">};
+</div></code></pre>
+
+        <p><strong>4. 完成如下需求</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-comment">/* </span>
+</div><div class="hljs-line"><span class="hljs-comment">const obj = {</span>
+</div><div class="hljs-line"><span class="hljs-comment">    data: [</span>
+</div><div class="hljs-line"><span class="hljs-comment">        ['xiaoming', 'male', '18', 'beijing', '2020-01-02'],</span>
+</div><div class="hljs-line"><span class="hljs-comment">        ['xiaofang', 'female', '18', 'shanghai', '2020-03-02']</span>
+</div><div class="hljs-line"><span class="hljs-comment">    ],</span>
+</div><div class="hljs-line"><span class="hljs-comment">    columns: [</span>
+</div><div class="hljs-line"><span class="hljs-comment">        { name: 'name', note: '' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">        { name: 'gender', note: '' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">        { name: 'age', note: '' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">        { name: 'address', note: '' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">        { name: 'registerTime', note: '' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">    ]</span>
+</div><div class="hljs-line"><span class="hljs-comment">};</span>
+</div><div class="hljs-line"><span class="hljs-comment">输出下面结果 </span>
+</div><div class="hljs-line"><span class="hljs-comment">[</span>
+</div><div class="hljs-line"><span class="hljs-comment">    { name: 'xiaoming', 'gender': 'male', age: '18', address: 'beijing', registerTime: '2020-01-02' },</span>
+</div><div class="hljs-line"><span class="hljs-comment">    { name: 'xiaofang', 'gender': 'female', age: '18', address: 'shanghai', registerTime: '2020-03-02' }</span>
+</div><div class="hljs-line"><span class="hljs-comment">]</span>
+</div><div class="hljs-line"><span class="hljs-comment">*/</span>
+</div></code></pre>
+
+        <p><strong>5. 已知一个多维数组，现在需要获取每一级的id，并以一维数组的形式展示</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">let</span> arr = [{
+</div><div class="hljs-line">    <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">name</span>: <span class="hljs-string">""</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">children</span>: [{
+</div><div class="hljs-line">        <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>,
+</div><div class="hljs-line">        <span class="hljs-attr">children</span>: [{
+</div><div class="hljs-line">            <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>
+</div><div class="hljs-line">        }, {
+</div><div class="hljs-line">            <span class="hljs-attr">id</span>: <span class="hljs-number">5</span>
+</div><div class="hljs-line">        }, {
+</div><div class="hljs-line">            <span class="hljs-attr">id</span>: <span class="hljs-number">6</span>
+</div><div class="hljs-line">        }]
+</div><div class="hljs-line">    }, {
+</div><div class="hljs-line">        <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>,
+</div><div class="hljs-line">        <span class="hljs-attr">children</span>: [{
+</div><div class="hljs-line">            <span class="hljs-attr">id</span>: <span class="hljs-number">7</span>
+</div><div class="hljs-line">        }]
+</div><div class="hljs-line">    }]
+</div><div class="hljs-line">}];
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> flatten = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">flatten</span>(<span class="hljs-params">arr</span>) </span>{
+</div><div class="hljs-line">    <span class="hljs-comment">// 实现你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">// 最后输出的结果：[1, 2, 3, 4, 5, 6, 7]</span>
+</div></code></pre>
+
+        <p><strong>6. 给出如下地址数据格式，实现函数 getNameById ，输⼊address 和 id ，输出 id 对应的地址 name</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">const</span> address = [{
+</div><div class="hljs-line">    <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">name</span>: <span class="hljs-string">'北京市'</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">children</span>: [{
+</div><div class="hljs-line">        <span class="hljs-attr">id</span>: <span class="hljs-number">11</span>,
+</div><div class="hljs-line">        <span class="hljs-attr">name</span>: <span class="hljs-string">'海淀区'</span>,
+</div><div class="hljs-line">        <span class="hljs-attr">children</span>: [{
+</div><div class="hljs-line">            <span class="hljs-attr">id</span>: <span class="hljs-number">111</span>,
+</div><div class="hljs-line">            <span class="hljs-attr">name</span>: <span class="hljs-string">'中关村'</span>
+</div><div class="hljs-line">        }]
+</div><div class="hljs-line">    }, {
+</div><div class="hljs-line">        <span class="hljs-attr">id</span>: <span class="hljs-number">12</span>,
+</div><div class="hljs-line">        <span class="hljs-attr">name</span>: <span class="hljs-string">'朝阳区'</span>
+</div><div class="hljs-line">    }],
+</div><div class="hljs-line">}, {
+</div><div class="hljs-line">    <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">name</span>: <span class="hljs-string">'河北省'</span>
+</div><div class="hljs-line">}];
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> getNameById = <span class="hljs-function">(<span class="hljs-params">address, id</span>) =&gt;</span> {
+</div><div class="hljs-line">    <span class="hljs-comment">// 实现你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(getNameById(address, <span class="hljs-number">2</span>)); <span class="hljs-comment">//输出："河北省"</span>
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(getNameById(address, <span class="hljs-number">111</span>)); <span class="hljs-comment">//输出："中关村"</span>
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(getNameById(address, <span class="hljs-number">32</span>)); <span class="hljs-comment">//输出：""</span>
+</div></code></pre>
+
+        <p><strong>7. 按照如下需求，实现两个版本号的比较</strong></p>
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-comment">/*</span>
+</div><div class="hljs-line"><span class="hljs-comment"> Semantic Versioning是一个前端通用的版本定义规范。格式为“{MAJOR}.{MINOR}.{PATCH}-{alpha|beta|rc}.{number)"，要求实现compare(a,b)方法，比较ab两个版本大小。</span>
+</div><div class="hljs-line"><span class="hljs-comment">   + 当a&gt;b是返回1;</span>
+</div><div class="hljs-line"><span class="hljs-comment">   + 当a=b是返回0;</span>
+</div><div class="hljs-line"><span class="hljs-comment">   + 当a&lt;b是返回-1;</span>
+</div><div class="hljs-line"><span class="hljs-comment">   其中：rc&gt;beta&gt;alpha，major&gt;minor&gt;patch;</span>
+</div><div class="hljs-line"><span class="hljs-comment">   例子：1.2.3&lt;1.2.4&lt;1.3.0.alpha.1&lt;1.3.0.alpha.2&lt;1.3.0.beta.1&lt;1.3.0.rc.1&lt;1.3.0</span>
+</div><div class="hljs-line"><span class="hljs-comment"> */</span>
+</div></code></pre>
+
+        <p><strong>8. 按照如下需求，实现对象的扁平化处理</strong></p>
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">const</span> flatten = <span class="hljs-function"><span class="hljs-params">obj</span> =&gt;</span> {
+</div><div class="hljs-line">    <span class="hljs-comment">// 实现你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> obj = {
+</div><div class="hljs-line">    <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>,
+</div><div class="hljs-line">    <span class="hljs-attr">b</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, { <span class="hljs-attr">c</span>: <span class="hljs-literal">true</span> }],
+</div><div class="hljs-line">    <span class="hljs-attr">c</span>: { <span class="hljs-attr">e</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">f</span>: <span class="hljs-number">3</span> },
+</div><div class="hljs-line">    <span class="hljs-attr">g</span>: <span class="hljs-literal">null</span>,
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(flatten(obj)); 
+</div><div class="hljs-line"><span class="hljs-comment">//输出：{a:1,'b[0]':1,'b[1]':2,'b[2].c':true,'c.e':2,'c.f':3,g:null}</span>
+</div></code></pre>
+
+        <p><strong>9. 完成如下需求</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-comment">/** </span>
+</div><div class="hljs-line"><span class="hljs-comment"> * 实现`getValue`函数，安全的获取目标对象指定`path`的值</span>
+</div><div class="hljs-line"><span class="hljs-comment"> * @输入 object: `{ a: [{ b: { c: 3 } }] }`  path: `a[0].b.c`</span>
+</div><div class="hljs-line"><span class="hljs-comment"> * @输出 3</span>
+</div><div class="hljs-line"><span class="hljs-comment"> * @输入 array: `[{ a: { b: [1] } }]` path: `[0].a.b[0]`</span>
+</div><div class="hljs-line"><span class="hljs-comment"> * @输出 1 </span>
+</div><div class="hljs-line"><span class="hljs-comment"> **/</span>
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> getValue = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getValue</span>(<span class="hljs-params">obj, path</span>) </span>{
+</div><div class="hljs-line">   <span class="hljs-comment">// 实现你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(getValue({ <span class="hljs-attr">a</span>: [{ <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> } }] }, <span class="hljs-string">'a[0].b.c'</span>));
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(getValue([{ <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: [<span class="hljs-number">1</span>] } }], <span class="hljs-string">'[0].a.b[0]'</span>));
+</div></code></pre>
+
+        <p><strong>10. 实现数据的倒序处理</strong></p>
+
+
+
+        <pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line"><span class="hljs-keyword">const</span> transformArray = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">transformArray</span>(<span class="hljs-params">arr</span>) </span>{
+</div><div class="hljs-line">    <span class="hljs-comment">// 实现你的代码</span>
+</div><div class="hljs-line">};
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> arr1 = [<span class="hljs-string">'a'</span>, [<span class="hljs-string">'b'</span>, [<span class="hljs-string">'c'</span>, [<span class="hljs-string">'d'</span>, <span class="hljs-literal">null</span>]]]];
+</div><div class="hljs-line"><span class="hljs-keyword">const</span> arr2 = transformArray(arr1);
+</div><div class="hljs-line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(arr2)); <span class="hljs-comment">// ['d',['c',['b',['a',null]]]]</span>
+</div></code></pre>
+    </div>
+</body>
+
+</html>

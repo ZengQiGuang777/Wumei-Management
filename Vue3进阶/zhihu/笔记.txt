@@ -1,0 +1,118 @@
+从零开始，基于 Vue3 + Vite + Pinia + TS 构建一个项目
+  1. 基于脚手架创建一个工程化的项目
+    $ yarn create vite
+    按照步骤选择需要安装的模块，以此来创建一个初始的项目
+    $ yarn
+    ----
+    @1 安装项目需要的模块「把能想到的先安装了」
+    @2 脚手架的配置
+      + 需要处理兼容（不是IE兼容），可以使用 @vitejs/plugin-legacy 控制需要兼容的浏览器 browerslist 列表，以及需要 polyfills ！
+      + 基础配置
+        + base
+        + plugins
+          + vue/vueJsx
+          + viteImp
+          + legacy
+          + ...
+        + resolve/alias
+        + ...
+      + 服务配置 server
+        + 和webpack-dev-server的配置几乎一致
+      + 打包配置 build
+        + assetsInlineLimit
+        + minify
+        + terserOptions
+        + ...
+      + css样式的处理 css
+      + ...
+    @3 .eslintrc.cjs 和 .prettierrc.json 可以按照自己的风格去修改配置
+    @4 响应式布局开发
+      + <meta name="viewport" ...>
+      + 导入 lib-flexible
+        + 根据当前设备的宽度，除以10，设置html（根元素）字体大小「REM和PX的换算比例」
+        + 设置了最大宽度540
+      + 设置稿按照 375 处理「vant的设计稿就是这个尺寸」
+        + 配置 pxtorem 插件：把我们在样式中写的px单位，自动转换为rem
+        + 后期编写样式，都按照375设计稿测量，把测量的值，直接以px去编写即可
+    @5 环境变量的处理
+      在@vue/cli脚手架中
+        + 我们基于 process.env.xxx 获取环境变量
+          + process.env.NODE_ENV：development/production
+          + ...
+        + 基于 cross-env 插件「或者直接改配置项」，来设置环境变量
+      在vite脚手架中
+        + 环境变量的获取，都是基于ES6中的 import.meta.env 处理的
+          + BASE_URL
+          + MODE
+          + DEV/PROD/SSR
+          + ...
+        + 设置环境变量：根目录中设置 .env / .env.development / .env.production
+          + 命名规则 VITE_xxx
+    @6 还可以配置 git husky
+    ......
+  2. 搭建项目文件的骨架
+    @1 准备需要的静态资源
+    @2 配置接口管理
+      + vite.config.js 配置跨域
+      + api/http.js 对axios的统一封装
+      + api/index.js
+    @3 components放公共组件、views放普通组件
+    @4 配置 pinia 的骨架
+    @5 配置路由的骨架
+    ......
+  3. 开始逐组件进行开发，一定要注意抽离/封装
+  4. 自测&内测
+  5. 部署
+    + $ yarn build 
+    + 把打包的内容部署到服务器，并且不要忘记服务器端一般也要设置跨域代理「nginx反向」
+
+==================
+@1 pinia 和 vuex4 的区别
+
+@2 @vue/cli 和 vite 的区别
+  + @vue/cli脚手架的底层核心是 webpack
+  + vite脚手架
+    + 开发环境：基于ESModule模块规范处理的
+    + 生产环境：基于轻量级的 rollup 打包工具处理
+  目前我做Vue3/React的项目，都是基于 vite 脚手架来处理的，主要原因：vite处理的速度要比webpack快很多，而且webpack支持的一些生态插件，目前vite大部分也都支持了（或者提供了相应的解决方案）！！但是因为vite处理兼容比较麻烦，所以我只用于Vue3这样的项目，不再考虑IE和低版本浏览器的兼容！
+  + 开发环境下要比webpack方式快很多很多（大概10~100倍），主要因为：即便开发环境下，基于webpck处理，也需要对代码按照规则进行编译，把编译后的内容进行预览，项目如果比较大，冷启动需要的时间也会很久（扩展：如何加快webpack编译和打包的速度）；但是vite就不会，因为开发环境下，它根本不会对代码进行编译，基于原生的ESModule规范，在项目预览的时候，实现模块之前的依赖导入（但是对于一些少量的插件，也需要编译，例如：less）
+  + 但是vite在生产环境下，也需要对代码进行打包编译，只不过不是用的webpack，而是使用了更轻量级的rollup
+    + 整体编译的速度会比webpack快一些「自己私下搜索几条 rollup 打包快的原因」
+    + 但是rollup的生态是不如webpack完善的，对于一些特殊的打包诉求，可能rollup处理不了「常规的基本都支持」
+  ------
+  冷启动：第一次启动「之前内存中没有相应的服务，我们是从新启动服务的」
+    @vue/cli
+      $ yarn serve
+      $ yarn build
+    vite
+      $ yarn dev
+      $ yarn build
+  热启动：冷启动后，启动的服务会存储到内存中，下一次代码有更新，需要实时预览的时候，直接从内存中调起服务；而且会对之前编译的内容进行缓存，当代码有更新，只对更新的部分进行重新编译，以此提高编译和预览的速度 --> 热更新
+
+@3 Vue3和Vue2的区别
+两三年前，尤雨溪在B站开Vue3发布会的时候，我全程跟着听过，再结合这两年的运用，大概总结了以下几点区别：
+  从底层机制上来讲：
+  + Vue3重写了DOM-DIFF算法，只比较动态节点，跳过静态节点，大大提高了视图编译的速度「相比较于Vue2，性能提高了1.3~2倍」
+  + 利用了 webpack 中的 tree shaking 机制，只打包用到的模块(按需打包)，降低了打包后文件体积
+  + 响应式操作原理，放弃了 Vue2 中的 Object.defineProperty，采用ES6新增的 Proxy 进行数据劫持，所以不兼容IE浏览器！
+    + 更加方便：不用区分数组和对象，都基于 Proxy 做处理即可
+    + 性能更高：无需迭代对象每一项分别做劫持，直接对整个对象做劫持即可
+    + 功能更强：除了传统的 get/set 劫持，还支持 deleteProperty/defineProperty/has/ownKeys 等更多的劫持方式！
+  Vue3还具备了一些Vue2没有的新特性：
+  + 支持 <Teleport> 传送门
+  + 支持 <Suspense> 异步组件
+  + 更好的支持 TypeScript
+  + 基于 Custom Renderer API（自定义渲染API） 可以更好的进行图形绘制
+  从语法上来讲：
+  + Vue3几乎完全兼容Vue2的语法，只不过不再具备Vue这个类「每个组件也不再是Vue的子类，组件中的this不再是Vue的实例」，把之前 Vue.prototype 上的属性方法，作为 this 私有的属性方法！
+  + 只不过Vue3也提供了几乎完全不同于Vue2的语法「推荐」
+    + 基于 Composition API（聚合式API） 替代 Options API（配置项式API），所有代码都写在 setup 函数（或者 <script setup> 脚本）中！
+    + 全面采用函数式编程，需要实现什么样的效果，都是从 vue 中解构出一个个的函数，例如：ref/reactive/computed/watch/watchEffect/nextTick/defineProps/defineEmits...
+    + 重新定义钩子函数：onBeforeMount/onMounted/onBeforeUpdate/onUpdated/onBeforeUnmount/onUnmounted...
+    + 自定义指令内部的钩子函数也改为和周期函数相匹配的名字
+    + 基于 app.xxx 做全局的配置
+    + 而且JSX语法使用上也有一些区别
+    + ...
+  + Vue3的<template>视图支持多个根节点，因为其内部采用了React中的 Fragment
+  + 相应的其生态中，例如：vuex4、vue-router4、pinia、UI组件库，也全部都采用函数式编程了！
+总之，我认为Vue3这套新的机制和语法，都非常的不错，更贴进于前端未来发展的趋势；所以，在不考虑IE兼容的情况下，我基本上都是基于Vue3去做项目的开发！

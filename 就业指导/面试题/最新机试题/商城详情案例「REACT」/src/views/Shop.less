@@ -1,0 +1,204 @@
+.shop-box {
+  overflow-x: hidden;
+
+  // 轮播图
+  .swiper-box {
+    box-sizing: border-box;
+    width: 375px;
+    height: 375px;
+    background: #DDD;
+    background-color: aqua;
+    position: relative;
+    margin: 0 auto;
+
+
+    .swiper-number {
+      // background-color:rgb(242, 229, 196);
+      border: 1px solid gray;
+      position: absolute;
+      bottom: 27px;
+      right: 20px;
+      border-radius: 15px;
+      width: 40px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+    }
+
+    .adm-swiper {
+      height: 100%;
+    }
+
+    .adm-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // 商品信息
+  .shop-detail {
+    margin: 10px 10px;
+    padding: 10px 5px 10px 15px;
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 10px;
+    height: 75px;
+
+    .title-box {
+      margin: 0 0 10px;
+      display: flex;
+      justify-content: space-between;
+
+      h2 {
+        letter-spacing: 0.2em;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .share {
+        color: rgb(28, 45, 122);
+        text-align: center;
+        border-radius: 5px;
+        background-color: rgb(244, 244, 244);
+        font-size: 12px;
+        width: 50px;
+        height: 20px;
+        line-height: 20px;
+        box-sizing: border-box;
+        font-weight: 600;
+
+        .svg {
+          margin: 0 5px 0;
+        }
+
+        span {
+          display: inline-block;
+          padding-left: 2px;
+        }
+
+
+      }
+    }
+
+    .price-box {
+      display: flex;
+
+      .shop-price {
+        color: rgb(255, 80, 0);
+        box-sizing: border-box;
+
+
+        span {
+          font-weight: 800;
+        }
+
+        span:nth-child(2),
+        span:nth-child(5) {
+          font-size: 16px;
+        }
+
+        ;
+
+        .sold {
+          display: inline-block;
+          margin-left: 10px;
+          color: rgb(194, 197, 205);
+          border-radius: 2px;
+          border: 1px solid;
+          width: 42px;
+          text-align: center;
+
+
+
+          span {
+            font-size: 12px;
+            transform: scale(0.8)
+          }
+
+          span:nth-child(1) {
+            display: inline-block;
+            padding-right: 2;
+          }
+
+          span:nth-child(2) {
+            display: inline-block;
+          }
+        }
+
+      }
+    }
+  }
+
+  // 可选规格
+  .shop-norms {
+    margin: 0px 10px;
+    background-color: white;
+    border-radius: 10px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    box-sizing: border-box;
+
+    .sn-context {
+      width: 100%;
+      padding: 0 10px;
+      color: rgb(194, 197, 205);
+      letter-spacing: 0.1em;
+      position: relative;
+
+      span:nth-child(1) {
+        display: inline-block;
+        position: absolute;
+        left: 15px
+      }
+
+      span:nth-child(2) {
+        display: inline-block;
+        position: absolute;
+        left: 100px;
+      }
+
+
+      span:nth-child(3) {
+        display: inline-block;
+        position: absolute;
+        right: 40px;
+        font-size: 14px;
+      }
+
+    }
+  }
+
+  // 可送达城市
+  .choose-city {
+    margin: 10px 10px;
+    background-color: white;
+    border-radius: 10px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    box-sizing: border-box;
+
+    .cc-context {
+      width: 100%;
+      padding: 0 10px;
+      color: rgb(194, 197, 205);
+      letter-spacing: 0.1em;
+      position: relative;
+
+      span:nth-child(1) {
+        display: inline-block;
+        position: absolute;
+        left: 15px
+      }
+
+      span:nth-child(2) {
+        display: inline-block;
+        position: absolute;
+        color: black;
+        left: 100px;
+      }
+    }
+  }
+}

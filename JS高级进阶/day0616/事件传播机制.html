@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件委托</title>
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #root {
+            width: 300px;
+            height: 300px;
+            background: lightblue;
+        }
+
+        #outer {
+            width: 200px;
+            height: 200px;
+            background: lightgreen;
+        }
+
+        #inner {
+            width: 100px;
+            height: 100px;
+            background: lightcoral;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root" class="center">
+        <div id="outer" class="center">
+            <div id="inner" class="center"></div>
+        </div>
+    </div>
+    <button id="submit">哈哈哈</button>
+
+    <!-- IMPORT JS -->
+    <script>
+        // 依托于事件的传播机制，不论点击body中的哪一个元素，都会触发body的点击行为，帮绑定的方法执行
+        // 在方法中，可以根据 ev.target 获取事件源「真实操作的元素」
+        // 最后我们可以基于事件源不同，去做不同的事情
+        document.body.addEventListener('click', function (ev) {
+            let target = ev.target,
+                targetId = target.id
+            if (targetId === 'inner') {
+                console.log('红')
+                return
+            }
+            if (targetId === 'outer') {
+                console.log('绿')
+                return
+            }
+            if (targetId === 'root') {
+                console.log('蓝')
+                return
+            }
+            console.log('呵呵呵')
+        })
+        // 我们期望点击按钮的逻辑单独抽出来「后期也不再进入body逻辑中处理」
+        let submit = document.querySelector('#submit')
+        submit.addEventListener('click', function (ev) {
+            console.log('哈哈哈')
+            ev.stopPropagation()
+        })
+
+
+        /* const html = document.documentElement,
+            body = document.body,
+            root = document.querySelector('#root'),
+            outer = document.querySelector('#outer'),
+            inner = document.querySelector('#inner')
+        inner.addEventListener('click', function (ev) {
+            console.log('红')
+            ev.stopPropagation()
+        })
+        outer.addEventListener('click', function (ev) {
+            console.log('绿')
+            ev.stopPropagation()
+        })
+        root.addEventListener('click', function (ev) {
+            console.log('蓝')
+            ev.stopPropagation()
+        }) */
+
+
+        /*
+        window.addEventListener('click', function () { console.log('window 捕获') }, true)
+        window.addEventListener('click', function () { console.log('window 冒泡') }, false)
+
+        document.addEventListener('click', function () { console.log('document 捕获') }, true)
+        document.addEventListener('click', function () { console.log('document 冒泡') }, false)
+
+        html.addEventListener('click', function (ev) {
+            console.log('html 捕获')
+            // ev.stopPropagation()  // 不是阻止冒泡传播，而是阻止事件传播「所有阶段都可以阻止」, 但是只能阻止后续的操作
+            ev.stopImmediatePropagation() //相比较于 stopPropagation，此方法不仅可以阻止后续的操作，还可以把当前元素上，绑定的其它未执行的方法，也阻止执行！
+        }, true)
+        html.addEventListener('click', function (ev) {
+            console.log('html 捕获2')
+        }, true)
+        html.addEventListener('click', function (ev) { console.log('html 冒泡') }, false)
+
+        body.addEventListener('click', function () { console.log('body 捕获') }, true)
+        body.addEventListener('click', function () { console.log('body 冒泡') }, false)
+
+        root.addEventListener('click', function () { console.log('root 捕获') }, true)
+        root.addEventListener('click', function () { console.log('root 冒泡') }, false)
+
+        outer.addEventListener('click', function () { console.log('outer 捕获') }, true)
+        outer.addEventListener('click', function () { console.log('outer 冒泡') }, false)
+
+        inner.addEventListener('click', function () { console.log('inner 捕获') }, true)
+        inner.addEventListener('click', function () { console.log('inner 冒泡') }, false) 
+        */
+    </script>
+</body>
+
+</html>

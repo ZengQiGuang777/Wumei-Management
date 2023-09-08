@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue测试页</title>
+</head>
+
+<body>
+    <div id="app">
+        {{msg}}
+        <br>
+        {{text}}
+    </div>
+
+    <!-- IMPORT JS -->
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script>
+        /*
+         在 new Vue 的时候，OptionsAPI 中的 data 是用来构建“响应式”数据(状态)的
+           @1 在data中构建的状态，会直接挂载到实例上
+             + 在JS中，可以基于实例去访问对应的状态 -> vm.msg / this.xxx
+             + 而挂载到实例上的信息，可以直接在视图中访问 -> {{ msg }}
+           @2 在data中构建的状态，会被进行“数据劫持 GET/SET”；数据劫持的目的是让其变为响应式的，这样以后修改此状态信息，会触发SET劫持函数，在此劫持函数中，不仅修改了状态值，而且还会通知视图更新！
+             + 只有在NEW的时候，写在data中的状态，才会默认被数据劫持，变为响应式状态
+
+         ==============================
+         Vue2响应式源码
+           1. 在 new Vue 后，首先执行 Vue.prototype._init 方法，在此方法中做了很多事情，例如：
+             + 向实例上挂载很多内置的私有属性
+               + 带 $xxx 是我们开发者后续要用到的
+               + 带 _xxx 是给Vue内部用的
+             + 触发 beforeCreate 钩子函数执行
+             + 初始化 上下文 中的信息
+             + 执行 initState 方法，初始化 属性、状态、计算属性、监听器 等信息
+             + 触发 created 钩子函数执行
+             + ...
+
+           2. 执行 initState 方法的时候
+             + 基于 initProps$1 初始化属性「注册接收属性 & 属性规则校验」
+             + 基于 initMethods 初始化普通函数
+             + 基于 initComputed$1 初始化计算属性
+             + 基于 initWatch 初始化监听器
+             + 基于 initData 初始化状态
+             + ...
+
+           3. 执行 initData 方法的时候，主要目的就是初始化状态「也就是把状态信息做响应式数据劫持」
+             + 先判断 data 是否是一个函数（组件中的data都是函数）；如果是函数，先把函数执行（函数中的this是实例，并且传递实例），把执行的返回值，重新赋值给data！
+               var data = vm.$options.data;
+               data = vm._data = isFunction(data) ? getData(data, vm) : data || {};
+             + 接下来要确保data是一个“纯粹的”对象
+               if (!isPlainObject(data)) {
+                  data = {};
+                  warn$2('data functions should return an object:...',vm);
+               }
+             + 然后基于 Object.keys 方法，获取data对象中的“可枚举”、“非Symbol类型”的私有属性，然后判断这些属性，是否出现在 methods和props 中，如果出现了则报错！「原因：methods/props中编写的信息，也会直接挂在到实例上，如果名字一样，则相互冲突了」
+               var keys = Object.keys(data);
+               var props = vm.$options.props;
+               var methods = vm.$options.methods;
+               var i = keys.length;
+               while (i--) {
+                 ...
+               }
+             + 最后基于 observe 函数，对 data 对象中的信息进行数据劫持
+               var ob = observe(data);
+               ob && ob.vmCount++;
+            学习总结：真实项目中，建议把状态数据，全部事先写在data中（即便不清楚其值，也先写上，可以赋值初始值）；因为只有写在data中的数据，在最开始渲染阶段，才会被做“响应式的数据劫持”！
+
+          4. 执行 observe 方法的时候，把 data 对象传递进去
+             + 如果 data 对象已经被处理过，则不会重新处理
+              if (value && hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+                 return value.__ob__;
+              }
+             + 而且 data 对象必须符合好多条件，才可以去处理：是数组或者对象、并且没有被冻结/密封/阻止扩展、并且不是ref对象、也不是VirtualDOM(vnode)...
+              if (... && (isArray(value) || isPlainObject(value)) && Object.isExtensible(value) && !value.__v_skip && !isRef(value) && !(value instanceof VNode)) {
+                return new Observer(value, shallow, ssrMockReactivity);
+              }
+             + 如果符合了全部条件，则创建 Observer 类的实例，把 data 对象传递进去进行处理
+            学习总结：如果某个写在 data 中的对象，我们不期望对其内部做劫持处理（因为劫持处理的过程是需要消耗性能和时间的）（例如：从服务器获取的数据，我们并没有修改其内部某一项值，让视图更新的需求，那么这些数据压根儿不需要做劫持），此时我们只需要把这个对象基于Object.freeze“冻结”即可！
+
+          5. 执行 new Observer(data) ，对data对象中的每一项进行数据劫持
+             + 但凡被处理过的对象，都会设置一个 __ob__ 属性，属性值是 Observer 类的实例
+              def(value, '__ob__', this);
+             + 然后判断 data 是数组还是对象，两者处理的方式是不一样的
+             + 如果是对象：
+               + 基于 Object.keys 获取对象所有“可枚举、非Symbol类型”的私有属性
+               + 然后迭代这些成员，对每一个成员，基于 defineReactive 做数据劫持
+               var keys = Object.keys(value);
+               for (var i = 0; i < keys.length; i++) {
+                 var key = keys[i];
+                 defineReactive(value, key, NO_INIITIAL_VALUE, undefined, shallow, mock);
+               }
+             + 如果是数组：
+               + 在Vue2中，有一个对象 arrayMethods，这个对象的特点：
+                 + 对象中有7个方法：push/pop/shift/unshift/splice/sort/reverse
+                 + 对象.__proto__指向Array.prototype
+               + 接下来让data这个数组，拥有 arrayMethods 上的这七个方法
+                 + 在非IE浏览器中，就是让 data数组.__proto__ = arrayMethods
+                 + 在IE浏览器中，迭代 arrayMethods 中的每一个方法，把这些方法作为data数组的私有方法
+               + 当我们以后调用数组这7个方法的时候，用的都是 arrayMethods 中的这七个方法
+                 调用重写的这7个方法，其内部：
+                 + 获取传递的实参
+                 + 基于Array.prototype内置的方法实现对应的功能
+                 + 如果调用的是 push/unshift/splice，需要把新增的内容，基于 observeArray 进行递归处理，实现深度的监听坚持！
+                 + 最后通知视图更新
+               + 执行 observeArray 对传递的 data 数组，再次进行递归处理
+
+          6. 在 defineReactive 函数中
+             + 首先又对此对象中的某个成员进行校验，验证是否是冻结/密封的，如果是，则不进行数据劫持
+                var property = Object.getOwnPropertyDescriptor(obj, key);
+                if (property && property.configurable === false) {
+                   return;
+                }
+             + 然后对对象中此成员的值，进行递归处理，目的是进行深度的监听劫持
+                var childOb = !shallow && observe(val, false, mock);
+             + 最后基于 Object.defineProperty 对此对象中的这个成员做GET/SET劫持
+                Object.defineProperty(obj, key, {
+                    enumerable: true,
+                    configurable: true,
+                    get: function reactiveGetter() {
+                    ...
+                    },
+                    set: function reactiveSetter(newVal) {
+                        // 新老值一样，则不进行任何的处理
+                        // 对新设置的值，需要基于 observe 递归，做劫持处理
+                        childOb = !shallow && observe(newVal, false, mock);
+                        // 最后通知视图更新
+                    }
+                });
+
+          7. 在observeArray方法中
+             + 迭代数组中的每一项，对每一项再基于observe进行递归处理，实现深度的监听劫持
+               for (var i = 0, l = value.length; i < l; i++) {
+                  observe(value[i], false, this.mock);
+               }
+
+          ==============================
+          总结：Vue2的响应式原理中，针对数组和对象，有不同的处理情况
+            + 如果是对象：基于 Object.defineProperty 对对象中的“每个成员（可枚举、非Symbol类型）”，进行“深度”的监听劫持；当修改成员值的时候，会触发SET劫持函数，在函数中，不仅修改了成员值，而且还对新修改的值做监听劫持，最主要的是通知视图更新！
+            + 如果是数组：并不像对象一样，没有对数组中的每个索引项做监听劫持（所以基于索引修改数组某一项的值，视图是不会更新的），而是重写了数组的7个方法「push/shift/unshift/pop/splice/sort/reverse」，基于这个7个方法修改数组的内容，不仅仅修改了内容，而且对新修改的内容也会做劫持，也会通知视图的更新！最后对数组中的每一项内容，也基于递归的方式，看看是否需要劫持！
+         */
+
+        /* let vm = new Vue({
+            data: {
+                msg: '哈哈哈',
+                obj: {
+                    x: 10
+                }
+            }
+        })
+        vm.text = '呵呵呵'
+        console.log(vm)
+        vm.$mount('#app') */
+    </script>
+
+    <script src="test.js"></script>
+</body>
+
+</html>

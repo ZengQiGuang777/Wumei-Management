@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端事件穿透问题</title>
+    <!-- IMPORT CSS -->
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        .box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+        }
+
+        .box1 {
+            z-index: 10;
+            background: rgba(255, 0, 0, 0.504);
+        }
+
+        .box2 {
+            /* margin-top: -10px; */
+            /* margin-left: -10px; */
+            z-index: 5;
+            background: rgba(0, 128, 0, 0.504);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box box1"></div>
+    <div class="box box2"></div>
+
+    <!-- IMPORT JS-->
+    <script>
+        const box1 = document.querySelector('.box1'),
+            box2 = document.querySelector('.box2')
+        box1.ontouchstart = function () {
+            console.log('点击的是BOX1')
+            box1.style.display = 'none'
+        }
+        box2.onclick = function () {
+            console.log('点击的是BOX2')
+        }
+    </script>
+</body>
+
+</html>

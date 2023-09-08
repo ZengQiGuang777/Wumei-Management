@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片幻灯片效果</title>
+    <!-- IMPORT CSS -->
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        .slide-box {
+            position: relative;
+            box-sizing: border-box;
+            margin: 20px auto;
+            width: 200px;
+            height: 110px;
+            overflow: hidden;
+        }
+
+        /* 封面区域样式 */
+        .slide-box .cover {
+            position: relative;
+            height: 100%;
+            background: #EEE;
+            transition: opacity .3s;
+        }
+
+        .slide-box .cover img {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-box .cover .time {
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+            z-index: 1;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: #FFF;
+            background: rgba(0, 0, 0, .6);
+        }
+
+        /* 进度区域的样式 */
+        .slide-box .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #EEE;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity .3s;
+        }
+
+        .slide-box:hover .progress {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .slide-box:hover .cover {
+            opacity: 0;
+        }
+
+        /* 
+        .slide-box .progress {
+            background: url('./images/225865760.png') no-repeat;
+            /!* 
+            真实开发中，背景图大小是不固定的 
+              宽度：盒子宽 * 10「协定好的一行展示10个」
+              高度：Math.ceil(总图片数/10) * 盒子高
+            *!/
+            background-size: 2000px 550px;
+            /!*
+            默认展示背景图中的第一张，但是后期需要根据鼠标在盒子中的位置，计算出应该展示哪一张，并计算出对应的 background-position 值！
+             *!/
+            background-position: 0 0;
+        } 
+        */
+
+        .slide-box .progress .bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            width: 100%;
+            background: #000;
+        }
+
+        .slide-box .progress .bar .all {
+            position: relative;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, .3);
+            overflow: hidden;
+        }
+
+        .slide-box .progress .bar .already {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 2px;
+            background: #FFF;
+            /* 后期根据鼠标的移动，动态计算进度 */
+            width: 0%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 每一项 -->
+    <div class="slide-box">
+        <!-- 封面层 -->
+        <div class="cover">
+            <img src="images/fengmian.jpg" alt="">
+            <span class="time">03:48</span>
+        </div>
+        <!-- 进度层 -->
+        <div class="progress">
+            <div class="bar">
+                <div class="all">
+                    <div class="already"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMPORT JS -->
+    <script>
+        // 获取需要操作的元素
+        const slideBox = document.querySelector('.slide-box'),
+            progressBox = slideBox.querySelector('.progress'),
+            alreadyBox = progressBox.querySelector('.already')
+
+        // 初始化数据和样式
+        let W = slideBox.offsetWidth,
+            H = slideBox.offsetHeight,
+            C = 10,  //每一行展示的数量
+            T = 46,  //总图片数量
+            URL = './images/225865760.png'  //背景图地址
+        progressBox.style.cssText = `
+            background: url(${URL}) no-repeat;
+            background-size: ${W * C}px ${Math.ceil(T / C) * H}px;
+            background-position: 0 0;
+        `
+        alreadyBox.style.width = '0%'
+
+        // 移动计算
+        const computed = function computed(ev) {
+            let l = ev.clientX - slideBox.getBoundingClientRect().left,
+                ratio = l / W  //计算鼠标距离盒子左边的百分比
+            ratio = ratio < 0 ? 0 : (ratio > 1 ? 1 : ratio)
+            // 控制进度条的样式
+            alreadyBox.style.width = `${ratio * 100}%`
+            // 控制背景图的样式
+            let N = Math.round(T * ratio)
+            N = N < 1 ? 1 : (N > T ? T : N)
+            let x = N % C //计算在第几列
+            x = x === 0 ? C : x
+            let y = Math.ceil(N / C) //计算在第几行
+            progressBox.style.backgroundPosition = `${-(x - 1) * W}px ${-(y - 1) * H}px`
+        }
+        slideBox.addEventListener('mouseenter', computed)
+        slideBox.addEventListener('mousemove', computed)
+    </script>
+</body>
+
+</html>
